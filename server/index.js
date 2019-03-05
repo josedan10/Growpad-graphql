@@ -1,6 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const { gql } = require('apollo-server-express')
+require('dotenv').config()
+require('./config')
 
 const app = express()
 
