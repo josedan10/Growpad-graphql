@@ -37,7 +37,7 @@ const listSchema = new mongoose.Schema({
 const noteSchema = new mongoose.Schema({
   title: {
     type: String,
-    default: moment.format('ddd, MMM Do YYYY at h:mm:ss')
+    default: moment().format('ddd, MMM Do YYYY at h:mm:ss')
   },
   content: String,
   created_at: {
@@ -62,9 +62,11 @@ const walletSchema = new mongoose.Schema({
     default: 0.00
   },
   movements: [{
-    type: String,
-    enum: ['deposit', 'withdrawal'],
-    required: [true, 'Please, specify the movement type.'],
+    type: {
+      type: String,
+      enum: ['deposit', 'withdrawal'],
+      required: [true, 'Please, specify the movement type.']
+    },
     amount: {
       type: Number,
       default: 0.00
@@ -77,7 +79,7 @@ const walletSchema = new mongoose.Schema({
 })
 
 const userSchema = new mongoose.Schema({
-  username: {
+  userName: {
     type: String,
     required: [true, 'The username is required.']
   },
@@ -126,4 +128,4 @@ userSchema
     this.pass_confirmation = passConf
   })
 
-export default mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', userSchema)
