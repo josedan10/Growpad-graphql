@@ -1,5 +1,11 @@
 {
   "plugins": [
     "import-graphql"
-  ]
+  ],
+  "presets": ["next/babel"], 
+  "env": { 
+    "test": { 
+      "presets": [ "env", "next/babel" ] 
+    } 
+  }
 }

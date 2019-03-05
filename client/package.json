@@ -4,12 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "next",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "babel-plugin-import-graphql": "^2.7.0"
+  },
+  "dependencies": {
+    "@zeit/next-sass": "^1.0.1",
+    "animate.css": "^3.7.0",
+    "aos": "^2.3.4",
+    "graphql": "^14.1.1",
+    "next": "^8.0.3",
+    "node-sass": "^4.11.0",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1"
   }
 }
