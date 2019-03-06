@@ -1,12 +1,21 @@
+const Joi = require('joi')
+const mongoose = require('mongoose')
 const UserModel = require('../../models/User')
+
+const { UserInputError } = require('apollo-server-express')
+const {
+  userModelValidator
+} = require('../modelValidators')
 
 const resolvers = {
   Query: {
-    getUsers: async (parent, args, context, info) => {
-      let response = await UserModel.find({})
+    getUsers: async (parent, args, context, info) => UserModel.find({}),
+    getUserById: async (parent, { id }, context, info) => {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw new UserInputError(`${id} is not valid user ID`)
+      }
 
-      console.log(response)
-      return response
+      return UserModel.findById(id)
     }
   },
 

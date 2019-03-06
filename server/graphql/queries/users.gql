@@ -1,3 +1,8 @@
 type Query {
+  # Users queries
+
   getUsers: [User]
+  getUserById (id: ID!): User
+  getUserByUsername (username: String!): User
+  deleteUserById (id: ID!): Response
 }

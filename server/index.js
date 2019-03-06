@@ -15,7 +15,6 @@ const port = process.env.SERVER_PORT || 4000
 const host = process.env.SERVER_HOST || 'localhost'
 const gqlServer = new ApolloServer({ schema })
 
-
 app.use(cors())
 
 app.use(bodyParser.json())
