@@ -9,6 +9,19 @@
 
 const mongoose = require('mongoose')
 const moment = require('moment')
+const validate = require('validate.js')
+const bcrypt = require('bcrypt-nodejs')
+
+const HASH_SALT_AROUNDS = process.env.HASH_SALT_AROUNDS || 10
+
+const schemaOptions = {
+  toObject: {
+    virtuals: true
+  },
+  toJSON: {
+    virtuals: true
+  }
+}
 
 // The user can't create lists, usually TODOs Lists
 const listSchema = new mongoose.Schema({
@@ -79,13 +92,29 @@ const walletSchema = new mongoose.Schema({
 })
 
 const userSchema = new mongoose.Schema({
-  userName: {
+  username: {
     type: String,
-    required: [true, 'The username is required.']
+    required: [true, 'The username is required.'],
+    unique: true
+  },
+  email: {
+    type: String,
+    required: [true, 'The email is required'],
+    unique: true,
+    validate: {
+      validator: (email) => (
+        validate.single(email, { presence: true, email: true }) === undefined
+      ),
+      message: 'Invalid email format'
+    }
   },
   password: {
     type: String,
-    required: [true, 'The password is required.']
+    required: [true, 'The password is required.'],
+    validate: {
+      validator: (pass) => pass === this.passConf,
+      message: 'The passwords must match'
+    }
   },
   firstName: {
     type: String,
@@ -117,15 +146,26 @@ const userSchema = new mongoose.Schema({
     default: 'es'
   },
   wallets: [walletSchema]
-})
+}, schemaOptions)
 
 userSchema
-  .virtual('pass_conf')
+  .virtual('password_confirmation')
   .get(() => {
-    return this.pass_confirmation
+    return this.passConf
   })
   .set((passConf) => {
-    this.pass_confirmation = passConf
+    this.passConf = passConf
   })
+
+userSchema.pre('save', function (next) {
+  let user = this
+
+  if (user.isModified('password')) {
+    let salt = bcrypt.genSaltSync(HASH_SALT_AROUNDS)
+    user.password = bcrypt.hashSync(user.password, salt)
+  }
+
+  return next()
+})
 
 module.exports = mongoose.model('User', userSchema)

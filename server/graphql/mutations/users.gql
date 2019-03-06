@@ -1,0 +1,12 @@
+type Mutation {
+  signUp (
+    username: String!,
+    password: String!,
+    password_confirmation: String!,
+    email: String!,
+    firstName: String!,
+    lastName: String!,
+    birthDate: String!,
+    sex: Sex!
+  ): User
+}

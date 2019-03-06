@@ -1,0 +1,10 @@
+type Error {
+  errorCode: String!,
+  errorMsg: String!
+}
+
+type Response {
+  status: Int!,
+  msg: String!,
+  errors: [Error]
+}

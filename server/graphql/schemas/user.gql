@@ -48,7 +48,8 @@ enum UserType {
 
 type User {
   _id: ID
-  userName: String!
+  username: String!
+  email: String!
   password: String!
   firstName: String!
   lastName: String!
