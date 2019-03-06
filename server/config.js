@@ -7,8 +7,6 @@ const dbPassword = process.env.DB_PASSWORD
 const dbHost = process.env.DB_HOST
 const dbPort = process.env.DB_PORT
 
-console.log(db, dbUser, dbPassword, dbHost, dbPort)
-
 /**
  * mongoose.connect('mongodb://username:password@host:port/database?options...');
  * online documentation: https://mongoosejs.com/docs/connections.html

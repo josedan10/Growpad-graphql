@@ -1,47 +1,23 @@
-const {
-  addMockFunctionsToSchema,
-  mergeSchemas,
-  makeExecutableSchema
-} = require('graphql-tools')
+const fs = require('fs')
+const path = require('path')
+const { makeExecutableSchema, addMockFunctionsToSchema, mergeSchemas } = require('graphql-tools')
 
-const { gql, ApolloServer } = require('apollo-server-express')
+const resolvers = require('./resolvers')
+const fileUserSchema = fs.readFileSync(path.resolve('./graphql/schemas/user.gql'), 'utf8')
+const fileQueries = fs.readFileSync(path.resolve('./graphql/queries/users.gql'), 'utf8')
 
-const schemas = require('./schemas/user')
-const queries = require('./queries/users')
+const fileSchema = makeExecutableSchema({ typeDefs: fileUserSchema + '\n' + fileQueries})
+// const Queries = makeExecutableSchema({typeDefs: fileQueries})
+addMockFunctionsToSchema({ schema: fileSchema })
 
-const { importSchema } = require('graphql-import')
-const schemasDefinitions = importSchema('./schemas/user.graphql')
+// addMockFunctionsToSchema({ schema: Queries })
 
-addMockFunctionsToSchema(schemas)
-addMockFunctionsToSchema(queries)
+const schema = mergeSchemas({
+  schemas: [
+    fileSchema
+  ],
+  resolvers
+})
 
-// module.exports = mergeSchemas({
-//   schemas: [
-//     schemas,
-//     queries
-//   ]
-// })
+module.exports = schema
 
-// The GraphQL schema
-const typeDefs = gql`
-  type Query {
-    "A simple type for getting started!"
-    hello: String
-  }
-`
-
-// A map of functions which return data for the schema.
-const resolvers = {
-  Query: {
-    hello: () => 'world'
-  }
-}
-
-// module.exports = makeExecutableSchema({
-//   typeDefs,
-//   resolvers
-// })
-
-module.exports = () => {
-  console.log(schemasDefinitions)
-}

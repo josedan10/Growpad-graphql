@@ -11,5 +11,8 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "eslint": "^5.15.1",
+    "standard": "^12.0.1"
+  }
 }
