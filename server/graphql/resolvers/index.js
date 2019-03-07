@@ -36,6 +36,16 @@ const resolvers = {
         console.log(error)
         return error
       }
+    },
+
+    newList: async (parent, { username, title }, context, info) => {
+      try {
+        return UserModel.findOneAndUpdate(username, {
+          $push: { lists: { title } }
+        })
+      } catch (error) {
+        throw new ApolloError(`Error creating ${title} list`)
+      }
     }
   }
 }

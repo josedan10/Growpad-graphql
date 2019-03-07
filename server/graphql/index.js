@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { makeExecutableSchema, addMockFunctionsToSchema, mergeSchemas } = require('graphql-tools')
+const { makeExecutableSchema } = require('graphql-tools')
 const ConstraintDirective = require('graphql-constraint-directive')
 
 const resolvers = require('./resolvers')
@@ -19,6 +19,8 @@ const mutationsDir = fs.readdirSync(path.resolve('./graphql/queries/'))
 let schemas = schemasDir.map(fileName => fs.readFileSync(path.resolve(`./graphql/schemas/${fileName}`), 'utf8'))
 let queries = queriesDir.map(fileName => fs.readFileSync(path.resolve(`./graphql/queries/${fileName}`), 'utf8'))
 let mutations = mutationsDir.map(fileName => fs.readFileSync(path.resolve(`./graphql/mutations/${fileName}`), 'utf8'))
+
+// TODO: merge resolvers
 
 const fileSchema = makeExecutableSchema({
   typeDefs: [...schemas, ...queries, ...mutations],

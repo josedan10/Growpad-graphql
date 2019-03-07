@@ -10,5 +10,8 @@ type Mutation {
     sex: Sex!
   ): User
 
-  
+  newList (
+    username: String!,
+    title: String!
+  ): User
 }
