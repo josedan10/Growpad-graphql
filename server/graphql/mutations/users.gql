@@ -9,4 +9,6 @@ type Mutation {
     birthDate: String!,
     sex: Sex!
   ): User
+
+  
 }

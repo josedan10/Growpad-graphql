@@ -1,5 +1,5 @@
-const userModelValidator = require('./userValidator')
+const userModelValidator = require('./userValidators')
 
 module.exports = {
-  userModelValidator
+  ...userModelValidator
 }

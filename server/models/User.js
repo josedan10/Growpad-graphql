@@ -8,93 +8,17 @@
  */
 
 const mongoose = require('mongoose')
-const moment = require('moment')
 const validate = require('validate.js')
 const bcrypt = require('bcrypt-nodejs')
+const { schemaOptions, listSchema, walletSchema, noteSchema } = require('./AuxSchemas')
 
 const HASH_SALT_AROUNDS = process.env.HASH_SALT_AROUNDS || 10
-
-const schemaOptions = {
-  toObject: {
-    virtuals: true
-  },
-  toJSON: {
-    virtuals: true
-  }
-}
-
-// The user can't create lists, usually TODOs Lists
-const listSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Please identify your list.']
-  },
-  items: [{
-    name: {
-      type: String,
-      required: true
-    },
-    checked: Boolean
-  }],
-  created_at: {
-    type: Date,
-    default: moment()
-  },
-  updated_at: {
-    type: Date,
-    default: moment()
-  }
-})
-
-// The user can create notes
-const noteSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    default: moment().format('ddd, MMM Do YYYY at h:mm:ss')
-  },
-  content: String,
-  created_at: {
-    type: Date,
-    default: moment()
-  },
-  updated_at: {
-    type: Date,
-    default: moment()
-  }
-})
-
-// The wallets helps the user to administer his finance
-const walletSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please identify your wallet.']
-  },
-  description: String,
-  balance: {
-    type: Number,
-    default: 0.00
-  },
-  movements: [{
-    type: {
-      type: String,
-      enum: ['deposit', 'withdrawal'],
-      required: [true, 'Please, specify the movement type.']
-    },
-    amount: {
-      type: Number,
-      default: 0.00
-    },
-    date: {
-      type: Date,
-      default: moment()
-    }
-  }]
-})
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: [true, 'The username is required.'],
+    maxlength: [100, 'The username is too long.'],
     unique: true
   },
   email: {
@@ -111,6 +35,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'The password is required.'],
+    maxlength: [100, 'The password is too long.'],
+    minlength: [8, 'The password is too short.'],
     validate: {
       validator: (pass) => pass === this.passConf,
       message: 'The passwords must match'
@@ -118,11 +44,13 @@ const userSchema = new mongoose.Schema({
   },
   firstName: {
     type: String,
-    required: [true, 'The first name is required.']
+    required: [true, 'The firstname is required.'],
+    maxlength: [255, 'The lastname is too long.']
   },
   lastName: {
     type: String,
-    required: [true, 'The last name is required.']
+    required: [true, 'The lastname is required.'],
+    maxlength: [255, 'The lastname is too long.']
   },
   birthDate: {
     type: Date,
