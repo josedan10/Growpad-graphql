@@ -1,13 +1,9 @@
 const mongoose = require('mongoose')
 const moment = require('moment')
 
+const TagModel = require('./Tag')
+
 const schemaOptions = {
-  toObject: {
-    virtuals: true
-  },
-  toJSON: {
-    virtuals: true
-  },
   timestamps: true
 }
 
@@ -22,7 +18,14 @@ const listSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    checked: Boolean
+    checked: {
+      type: Boolean,
+      default: false
+    }
+  }],
+  tags: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tag'
   }]
 }, schemaOptions)
 
@@ -33,6 +36,22 @@ const noteSchema = new mongoose.Schema({
     default: moment().format('ddd, MMM Do YYYY at h:mm:ss')
   },
   content: String
+}, schemaOptions)
+
+const movementSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['deposit', 'withdrawal'],
+    required: [true, 'Please, specify the movement type.']
+  },
+  amount: {
+    type: Number,
+    default: 0.00
+  },
+  date: {
+    type: Date,
+    default: moment()
+  }
 }, schemaOptions)
 
 // The wallets helps the user to administer his finance
@@ -46,21 +65,7 @@ const walletSchema = new mongoose.Schema({
     type: Number,
     default: 0.00
   },
-  movements: [{
-    type: {
-      type: String,
-      enum: ['deposit', 'withdrawal'],
-      required: [true, 'Please, specify the movement type.']
-    },
-    amount: {
-      type: Number,
-      default: 0.00
-    },
-    date: {
-      type: Date,
-      default: moment()
-    }
-  }]
+  movements: [movementSchema]
 })
 
 module.exports = {

@@ -1,20 +1,24 @@
 type Item {
+  _id: ID!
   name: String!
   checked: Boolean
 }
 
 type List {
+  _id: ID!
   title: String!
-  items: [Item]
-  created_at: Int!
-  updated_at: Int!
+  items: [Item],
+  tags: [Tag],
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Note {
+  _id: ID!
   title: String
   content: String
-  created_at: Int!
-  updated_at: Int!
+  createdAt: String!
+  updatedAt: String!
 }
 
 enum MovementType {
@@ -23,12 +27,14 @@ enum MovementType {
 }
 
 type Movement {
+  _id: ID!
   type: MovementType!
   amount: Float!
-  date: Int!
+  date: String!
 }
 
 type Wallet {
+  _id: ID!
   name: String!
   description: String
   balance: Float
@@ -47,7 +53,7 @@ enum UserType {
 }
 
 type User {
-  _id: ID
+  _id: ID!
   username: String!
   email: String!
   firstName: String!
@@ -58,6 +64,6 @@ type User {
   lists: [List]
   type: UserType!
   wallets: [Wallet]
-  created_at: String
-  updated_at: String
+  createdAt: String!
+  updatedAt: String!
 }

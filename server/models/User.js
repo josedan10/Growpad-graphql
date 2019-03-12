@@ -19,12 +19,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'The username is required.'],
     maxlength: [100, 'The username is too long.'],
-    unique: true
+    unique: [true, 'This username already exists.'],
+    index: true
   },
   email: {
     type: String,
-    required: [true, 'The email is required'],
-    unique: true,
+    required: [true, 'The email is required.'],
+    unique: [true, 'This email is already been used.'],
     validate: {
       validator: (email) => (
         validate.single(email, { presence: true, email: true }) === undefined
@@ -38,7 +39,9 @@ const userSchema = new mongoose.Schema({
     maxlength: [100, 'The password is too long.'],
     minlength: [8, 'The password is too short.'],
     validate: {
-      validator: (pass) => pass === this.passConf,
+      validator: function (pass) {
+        return this.passConf === undefined || this.passConf === pass
+      },
       message: 'The passwords must match'
     }
   },
@@ -78,19 +81,21 @@ const userSchema = new mongoose.Schema({
 
 userSchema
   .virtual('password_confirmation')
-  .get(() => {
+  .get(function () {
     return this.passConf
   })
-  .set((passConf) => {
+  .set(function (passConf) {
     this.passConf = passConf
   })
 
-userSchema.pre('save', function (next) {
+userSchema.post('validate', function (next) {
   let user = this
 
   if (user.isModified('password')) {
     let salt = bcrypt.genSaltSync(HASH_SALT_AROUNDS)
     user.password = bcrypt.hashSync(user.password, salt)
+  } else {
+    user.passConf = user.password
   }
 
   return next()

@@ -10,8 +10,39 @@ type Mutation {
     sex: Sex!
   ): User
 
-  newList (
+  createList (
     username: String!,
     title: String!
-  ): User
+  ): Response
+
+  changeListTitle (
+    username: String!,
+    listId: ID!,
+    listTitle: String!
+  ): Response
+
+  deleteList (
+    username: String!,
+    listId: ID!
+  ): Response
+
+  addItemToList (
+    itemName: String!,
+    username: String!,
+    listId: ID!
+  ): Response
+
+  modifyListItem (
+    itemName: String!,
+    isChecked: Boolean!,
+    username: String!,
+    listId: ID!,
+    itemId: ID!
+  ): Response
+
+  deleteListItem (
+    listId: ID!,
+    username: String!,
+    itemId: ID!
+  ): Response
 }

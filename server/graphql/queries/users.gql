@@ -4,5 +4,8 @@ type Query {
   getUsers: [User]
   getUserById (id: ID!): User
   getUserByUsername (username: String!): User
-  deleteUserById (id: ID!): Response
+  getUserLists (username: String!): [List]
+  getUserListById (username: String!, listId: ID!): List
+  getListsByTitle (username: String!, listTitle: String!): [List]
+  getListsByTag (username: String!, tagName: String!): [List]
 }
