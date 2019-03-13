@@ -25,7 +25,8 @@ const listSchema = new mongoose.Schema({
   }],
   tags: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Tag'
+    ref: 'Tag',
+    index: { unique: true, dropDups: true }
   }]
 }, schemaOptions)
 

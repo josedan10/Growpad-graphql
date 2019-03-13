@@ -1,0 +1,24 @@
+extend type Mutation {
+  createTag (
+    tagName: String!,
+    userId: ID!
+  ): Tag
+
+  removeUserFromTag (
+    tagName: String!,
+    userId: ID!
+  ): Response
+
+  addTagToList (
+    tagId: ID!,
+    username: String!,
+    listId: ID!
+  ): Response
+
+  removeTagFromList (
+    tagId: ID!,
+    username: String!,
+    listId: ID!
+  ): Response
+
+}

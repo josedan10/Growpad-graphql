@@ -1,7 +1,7 @@
 type Tag {
   _id: ID!,
   name: String!,
-  users_ids: [ID]!,
+  users: [User]!,
   createdAt: String!,
   updatedAt: String!,
 }

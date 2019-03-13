@@ -5,6 +5,8 @@ const _ = require('lodash')
 
 // Models
 const UserModel = require('../../../models/User')
+const TagModel = require('../../../models/Tag')
+
 /**
  *
  *
@@ -145,6 +147,15 @@ const getListsByTag = async (parent, { tagName, username }, context, info) => {
   }
 }
 
+const getUserTags = async (parent, { userId }, context, info) => {
+  try {
+    return TagModel.find({ users: userId }, { name: 1 })
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError(`Error getting tags of user: ${error.message}`)
+  }
+}
+
 module.exports = {
   getUsers,
   getUserById,
@@ -152,5 +163,6 @@ module.exports = {
   getUserLists,
   getUserListById,
   getListsByTitle,
-  getListsByTag
+  getListsByTag,
+  getUserTags
 }

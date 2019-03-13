@@ -5,12 +5,14 @@ const { schemaOptions } = require('./AuxSchemas')
 const tagSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'The tagname is required.']
+    required: [true, 'The tagname is required.'],
+    unique: [true, 'This tagname already exists.']
   },
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Users'
+      ref: 'Users',
+      index: { unique: true, dropDups: true }
     }
   ]
 }, schemaOptions)

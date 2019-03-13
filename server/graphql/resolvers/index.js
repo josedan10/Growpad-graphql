@@ -1,44 +1,39 @@
 // Mutations
-const {
-  signUp,
-  createList,
-  changeListTitle,
-  deleteList,
-  addItemToList,
-  modifyListItem,
-  deleteListItem
-} = require('./mutations/userMutations')
+const userMutations = require('./mutations/userMutations')
+
+const tagsMutations = require('./mutations/tagsMutations')
 
 // Queries
+const userQueries = require('./queries/userQueries')
+
+const tagQueries = require('./queries/tagQueries')
+
+// Resolvers
 const {
-  getUsers,
-  getUserById,
-  getUserByUsername,
-  getUserListById,
-  getUserLists,
-  getListsByTitle,
-  getListsByTag
-} = require('./queries/userQueries')
+  tagUsers
+} = require('./tagResolvers')
+
+const {
+  listTags
+} = require('./userResolvers')
 
 const resolvers = {
+  Tag: {
+    users: tagUsers
+  },
+
+  List: {
+    tags: listTags
+  },
+
   Query: {
-    getUsers,
-    getUserById,
-    getUserByUsername,
-    getUserListById,
-    getUserLists,
-    getListsByTitle,
-    getListsByTag
+    ...userQueries,
+    ...tagQueries
   },
 
   Mutation: {
-    signUp,
-    createList,
-    changeListTitle,
-    deleteList,
-    addItemToList,
-    modifyListItem,
-    deleteListItem
+    ...userMutations,
+    ...tagsMutations
   }
 }
 
