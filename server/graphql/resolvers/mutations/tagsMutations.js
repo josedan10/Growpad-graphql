@@ -5,14 +5,26 @@ const mongoose = require('mongoose')
 const TagModel = require('../../../models/Tag')
 const UserModel = require('../../../models/User')
 
+/**
+ * Preconditions:
+ * * The user must be exists
+ *
+ * @param {*} parent
+ * @param { userId, tagName } args
+ * @param {*} context
+ * @param {*} info
+ * @returns { Tag }
+ */
 const createTag = async (parent, { userId, tagName }, context, info) => {
+  tagName = tagName.toLowerCase()
   try {
     let existsTag = await TagModel.findOne({ name: tagName })
+    let tag
     userId = mongoose.Types.ObjectId(userId)
 
+    // No duplicate users
     if (existsTag) {
-      // No duplicate users
-      existsTag = await TagModel.findOneAndUpdate(
+      tag = await TagModel.findOneAndUpdate(
         {
           name: tagName
         },
@@ -20,22 +32,31 @@ const createTag = async (parent, { userId, tagName }, context, info) => {
           $addToSet: { users: userId }
         }
       )
-
-      return existsTag
     } else {
-      let tag = new TagModel({
+      tag = new TagModel({
         name: tagName,
         users: [userId]
       })
       await tag.save()
-
-      return tag
     }
+
+    return tag
   } catch (error) {
     throw new ApolloError(`Error creating tag '${tagName}': ${error.message}`, '400')
   }
 }
 
+/**
+ * Preconditions:
+ * * The user must exists
+ * * The tagName must exists
+ *
+ * @param {*} parent
+ * @param { userId, tagName } args
+ * @param {*} context
+ * @param {*} info
+ * @returns { Response }
+ */
 const removeUserFromTag = async (parent, { userId, tagName }, context, info) => {
   try {
     let tag = await TagModel.findOneAndUpdate({ name: tagName },
@@ -68,6 +89,18 @@ const removeUserFromTag = async (parent, { userId, tagName }, context, info) => 
   }
 }
 
+/**
+ * Preconditions:
+ * * The tag must exists
+ * * The list must exists
+ * * The username must exists
+ *
+ * @param {*} parent
+ * @param { tagId, listId, username } args
+ * @param {*} context
+ * @param {*} info
+ * @returns { Response }
+ */
 const addTagToList = async (parent, { tagId, listId, username }, context, info) => {
   try {
     let user = await UserModel.findOneAndUpdate({ username, 'lists._id': mongoose.Types.ObjectId(listId) },
@@ -101,6 +134,18 @@ const addTagToList = async (parent, { tagId, listId, username }, context, info) 
   }
 }
 
+/**
+ * Preconditions:
+ * * The user must exists
+ * * The list must exists
+ * * The tag must exists
+ *
+ * @param {*} parent
+ * @param { username, listId, tagId } args
+ * @param {*} context
+ * @param {*} info
+ * @returns { Response }
+ */
 const removeTagFromList = async (parent, { username, listId, tagId }, context, info) => {
   try {
     await UserModel.findOneAndUpdate(

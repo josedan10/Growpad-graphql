@@ -1,48 +1,47 @@
+# Inputs' user mutations
+input InputSignUp {
+  username: String!
+  password: String!
+  password_confirmation: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+  birthDate: String!
+  sex: Sex!
+}
+
+input InputCreateList {
+  username: String!
+  title: String!
+}
+
+input InputUsernameList {
+  username: String!
+  listId: ID!
+}
+
+# User mutations
 type Mutation {
-  signUp (
-    username: String!,
-    password: String!,
-    password_confirmation: String!,
-    email: String!,
-    firstName: String!,
-    lastName: String!,
-    birthDate: String!,
-    sex: Sex!
-  ): User
-
-  createList (
-    username: String!,
-    title: String!
-  ): Response
-
+  signUp (input: InputSignUp): User
+  createList (input: InputCreateList): Response
   changeListTitle (
-    username: String!,
-    listId: ID!,
+    input: InputUsernameList,
     listTitle: String!
   ): Response
-
-  deleteList (
-    username: String!,
-    listId: ID!
-  ): Response
-
+  deleteList (input: InputUsernameList): Response
   addItemToList (
-    itemName: String!,
-    username: String!,
-    listId: ID!
+    input: InputUsernameList,
+    itemName: String!
   ): Response
-
   modifyListItem (
+    input: InputUsernameList,
     itemName: String!,
     isChecked: Boolean!,
-    username: String!,
-    listId: ID!,
     itemId: ID!
   ): Response
 
   deleteListItem (
-    listId: ID!,
-    username: String!,
+    input: InputUsernameList,
     itemId: ID!
   ): Response
 }

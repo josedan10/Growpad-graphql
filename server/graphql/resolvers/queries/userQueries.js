@@ -100,7 +100,7 @@ const getUserListById = async (parent, { username, listId }, context, info) => {
  * @param {*} info
  * @returns {[ Lists ]}
  */
-const getListsByTitle = async (parent, { username, listTitle }, context, info) => {
+const getUserListsByTitle = async (parent, { username, listTitle }, context, info) => {
   try {
     let user = await UserModel.findOne({ username }, { lists: 1 })
     let regex = new RegExp(listTitle, 'gi')
@@ -112,7 +112,7 @@ const getListsByTitle = async (parent, { username, listTitle }, context, info) =
   }
 }
 
-// const getListsBeforeDate = async (parent, args, context, info) => {
+// const getUserListsBeforeDate = async (parent, args, context, info) => {
 
 // }
 
@@ -125,7 +125,7 @@ const getListsByTitle = async (parent, { username, listTitle }, context, info) =
  * @param {*} info
  * @returns {[ Lists ]}
  */
-const getListsByTag = async (parent, { tagName, username }, context, info) => {
+const getUserListsByTag = async (parent, { tagName, username }, context, info) => {
   try {
     let user = UserModel.findOne({ username },
       {
@@ -162,7 +162,7 @@ module.exports = {
   getUserByUsername,
   getUserLists,
   getUserListById,
-  getListsByTitle,
-  getListsByTag,
+  getUserListsByTitle,
+  getUserListsByTag,
   getUserTags
 }
