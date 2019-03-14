@@ -1,0 +1,4 @@
+extend type Query {
+  getInterests: [Interest]
+  getInterestByName (name: String!): Interest
+}

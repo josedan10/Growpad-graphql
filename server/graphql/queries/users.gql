@@ -6,6 +6,6 @@ type Query {
   getUserByUsername (username: String!): User
   getUserLists (username: String!): [List]
   getUserListById (username: String!, listId: ID!): List
-  getListsByTitle (username: String!, listTitle: String!): [List]
-  getListsByTag (username: String!, tagName: String!): [List]
+  getUserListsByTitle (username: String!, listTitle: String!): [List]
+  getUserListsByTag (username: String!, tagName: String!): [List]
 }

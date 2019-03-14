@@ -11,7 +11,7 @@ const tagSchema = new mongoose.Schema({
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Users',
+      ref: 'User',
       index: { unique: true, dropDups: true }
     }
   ]

@@ -76,7 +76,12 @@ const userSchema = new mongoose.Schema({
     enum: ['en', 'es', 'pt'],
     default: 'es'
   },
-  wallets: [walletSchema]
+  wallets: [walletSchema],
+  interests: [{
+    type: mongoose.Schema.Types.ObjectId,
+    index: { unique: true, dropDups: true },
+    ref: 'Interest'
+  }]
 }, schemaOptions)
 
 userSchema

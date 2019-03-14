@@ -64,6 +64,7 @@ type User {
   lists: [List]
   type: UserType!
   wallets: [Wallet]
+  interests: [Interest]
   createdAt: String!
   updatedAt: String!
 }
