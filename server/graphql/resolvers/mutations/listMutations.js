@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const moment = require('moment')
 const { ApolloError } = require('apollo-server-express')
 
+let uid = '5c8b23ac145b1136f4b6b244'
+
 // Models
 const UserModel = require('../../../models/User')
 const ListModel = require('../../../models/List')

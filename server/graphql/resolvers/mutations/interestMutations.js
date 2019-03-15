@@ -6,8 +6,11 @@ const { ObjectId } = mongoose.Types
 const InterestModel = require('../../../models/Interest')
 const UserModel = require('../../../models/User')
 
-const addUserToInterest = async (parent, { userId, name }, context, info) => {
+let uid = '5c8b23ac145b1136f4b6b244'
+
+const addUserToInterest = async (parent, { name }, context, info) => {
   try {
+    let userId = mongoose.Types.ObjectId(uid)
     name = name.toLowerCase()
     let interestExists = await InterestModel.findOne({ name })
     let interest
@@ -32,17 +35,18 @@ const addUserToInterest = async (parent, { userId, name }, context, info) => {
   }
 }
 
-const removeUserFromInterest = async (parent, { userId, interestId }, context, info) => {
+const removeUserFromInterest = async (parent, { id }, context, info) => {
   try {
+    let userId = ObjectId(uid)
     await UserModel.findOneAndUpdate({ _id: ObjectId(userId) },
       {
         $pull: {
-          interests: ObjectId(interestId)
+          interests: ObjectId(id)
         }
       }
     )
 
-    await InterestModel.findOneAndUpdate({ _id: ObjectId(interestId) },
+    await InterestModel.findOneAndUpdate({ _id: ObjectId(id) },
       {
         $pull: {
           users: ObjectId(userId)

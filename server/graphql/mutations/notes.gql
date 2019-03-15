@@ -3,4 +3,14 @@ extend type Mutation {
     title: String
     content: String!
   ): Response
+
+  modifyNote (
+    id: ID!
+    title: String
+    content: String!
+  ): Response
+
+  deleteNote (
+    id: ID!
+  ): Response
 }

@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const TagModel = require('../../../models/Tag')
 const UserModel = require('../../../models/User')
 const ListModel = require('../../../models/List')
+const NoteModel = require('../../../models/Note')
 
 let uid = '5c8b23ac145b1136f4b6b244'
 
@@ -55,7 +56,7 @@ const addUserToTag = async (parent, { name }, context, info) => {
 
 /**
  * @description: remove all user refs in tag (notes, lists)
- * 
+ *
  * Preconditions:
  * * The user must exists
  * * The name must exists
@@ -183,9 +184,95 @@ const addTagsToList = async (parent, { input, id }, context, info) => {
   }
 }
 
+/**
+ * Preconditions:
+ * * The user must exists
+ * * The list must exists
+ * * The tag must exists
+ *
+ * @param {*} parent
+ * @param { username, listId, tagId } args
+ * @param {*} context
+ * @param {*} info
+ * @returns { Response }
+ */
+const removeTagsFromNote = async (parent, { id, input }, context, info) => {
+  try {
+    let userId = mongoose.Types.ObjectId(uid)
+    let tagsIds = input.map(({ id }) => mongoose.Types.ObjectId(id))
+    await NoteModel.updateOne({ _id: mongoose.Types.ObjectId(id) },
+      {
+        $pull: {
+          tags: { $in: tagsIds }
+        }
+      }
+    )
+
+    await TagModel.updateMany({ _id: tagsIds },
+      {
+        $pull: {
+          users: userId
+        }
+      }
+    )
+
+    return {
+      msg: `Tag successfully removed from note`,
+      status: 200,
+      errors: []
+    }
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError(`Error removing tag from Note: ${error.message}`, '400')
+  }
+}
+
+/**
+ * @description: add tags to note.
+ *
+ * IMPORTANT: In TagModel doesn't put the NoteId.
+ * Tag is associated to Users
+ *
+ * @param {*} parent
+ * @param { tags, id } args
+ * @param {*} context
+ * @param {*} info
+ * @return { Response }
+ */
+const addTagsToNote = async (parent, { input, id }, context, info) => {
+  try {
+    let userId = mongoose.Types.ObjectId(uid)
+    let tagsIds = input.map(({ id }) => mongoose.Types.ObjectId(id))
+    await TagModel.updateMany({ _id: tagsIds },
+      {
+        $addToSet: {
+          users: userId
+        }
+      }
+    )
+
+    await NoteModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) },
+      {
+        $addToSet: { tags: { $each: tagsIds } }
+      }
+    )
+
+    return {
+      msg: `Added tags to note.`,
+      status: 200,
+      errors: []
+    }
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError(`Error adding tags to note: ${error.message}`)
+  }
+}
+
 module.exports = {
   addUserToTag,
   removeUserFromTag,
   addTagsToList,
-  removeTagsFromList
+  removeTagsFromList,
+  addTagsToNote,
+  removeTagsFromNote
 }

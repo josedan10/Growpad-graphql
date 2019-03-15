@@ -22,4 +22,14 @@ extend type Mutation {
     id: ID!
     input: [InputTagIds]
   ): Response
+
+  addTagsToNote (
+    id: ID!
+    input: [InputTagIds]
+  ): Response
+
+  removeTagsFromNote (
+    id: ID!
+    input: [InputTagIds]
+  ): Response
 }

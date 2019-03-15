@@ -11,8 +11,8 @@ extend type Mutation {
   ): Response
 
   modifyList (
-    id: ID!,
-    title: String,
+    id: ID!
+    title: String
     input: [InputItems]
   ): Response
 

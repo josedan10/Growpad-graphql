@@ -10,6 +10,7 @@ const userQueries = require('./queries/userQueries')
 const tagQueries = require('./queries/tagQueries')
 const interestQueries = require('./queries/interestQueries')
 const listQueries = require('./queries/listQueries')
+const notesQueries = require('./queries/noteQueries')
 
 // Resolvers
 const {
@@ -67,7 +68,8 @@ const resolvers = {
     ...userQueries,
     ...tagQueries,
     ...interestQueries,
-    ...listQueries
+    ...listQueries,
+    ...notesQueries
   },
 
   Mutation: {

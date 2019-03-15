@@ -1,0 +1,7 @@
+extend type Query {
+  getNotes: [Note]
+  getNoteById (id: ID!): Note
+  getNotesByTitle (title: String!): [Note]
+  getNotesByTag (tagName: String!): [Note]
+  getNotesByDateInterval (start: String, finish: String): [Note]
+}

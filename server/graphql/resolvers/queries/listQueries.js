@@ -8,7 +8,7 @@ const TagModel = require('../../../models/Tag')
 
 let uid = '5c8b23ac145b1136f4b6b244'
 
-const getLists = async (parent, { listId }, context, info) => {
+const getLists = async (parent, args, context, info) => {
   try {
     // TODO: Pass the userId by the authentication
     return await ListModel.find({})
