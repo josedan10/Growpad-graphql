@@ -14,7 +14,7 @@ const schemasDir = fs.readdirSync(path.resolve('./graphql/schemas/'))
 const queriesDir = fs.readdirSync(path.resolve('./graphql/queries/'))
 
 // 3) Read mutations
-const mutationsDir = fs.readdirSync(path.resolve('./graphql/queries/'))
+const mutationsDir = fs.readdirSync(path.resolve('./graphql/mutations/'))
 
 let schemas = schemasDir.map(fileName => fs.readFileSync(path.resolve(`./graphql/schemas/${fileName}`), 'utf8'))
 let queries = queriesDir.map(fileName => fs.readFileSync(path.resolve(`./graphql/queries/${fileName}`), 'utf8'))

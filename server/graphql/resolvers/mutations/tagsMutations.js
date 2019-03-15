@@ -4,29 +4,32 @@ const mongoose = require('mongoose')
 // Models
 const TagModel = require('../../../models/Tag')
 const UserModel = require('../../../models/User')
+const ListModel = require('../../../models/List')
+
+let uid = '5c8b23ac145b1136f4b6b244'
 
 /**
  * Preconditions:
  * * The user must be exists
  *
  * @param {*} parent
- * @param { userId, tagName } args
+ * @param { userId, name } args
  * @param {*} context
  * @param {*} info
  * @returns { Tag }
  */
-const createTag = async (parent, { userId, tagName }, context, info) => {
-  tagName = tagName.toLowerCase()
+const addUserToTag = async (parent, { name }, context, info) => {
+  name = name.toLowerCase()
   try {
-    let existsTag = await TagModel.findOne({ name: tagName })
+    let existsTag = await TagModel.findOne({ name })
     let tag
-    userId = mongoose.Types.ObjectId(userId)
+    let userId = mongoose.Types.ObjectId(uid)
 
     // No duplicate users
     if (existsTag) {
       tag = await TagModel.findOneAndUpdate(
         {
-          name: tagName
+          name
         },
         {
           $addToSet: { users: userId }
@@ -34,32 +37,39 @@ const createTag = async (parent, { userId, tagName }, context, info) => {
       )
     } else {
       tag = new TagModel({
-        name: tagName,
+        name,
         users: [userId]
       })
       await tag.save()
     }
 
-    return tag
+    return {
+      msg: `User added to tag '${name}'.`,
+      status: 200,
+      errors: []
+    }
   } catch (error) {
-    throw new ApolloError(`Error creating tag '${tagName}': ${error.message}`, '400')
+    throw new ApolloError(`Error creating tag '${name}': ${error.message}`, '400')
   }
 }
 
 /**
+ * @description: remove all user refs in tag (notes, lists)
+ * 
  * Preconditions:
  * * The user must exists
- * * The tagName must exists
+ * * The name must exists
  *
  * @param {*} parent
- * @param { userId, tagName } args
+ * @param { userId, name } args
  * @param {*} context
  * @param {*} info
  * @returns { Response }
  */
-const removeUserFromTag = async (parent, { userId, tagName }, context, info) => {
+const removeUserFromTag = async (parent, { name }, context, info) => {
   try {
-    let tag = await TagModel.findOneAndUpdate({ name: tagName },
+    let userId = mongoose.Types.ObjectId(uid)
+    let tag = await TagModel.findOneAndUpdate({ name: name },
       {
         $pull: {
           users: userId
@@ -85,52 +95,7 @@ const removeUserFromTag = async (parent, { userId, tagName }, context, info) => 
       errors: []
     }
   } catch (error) {
-    throw new ApolloError(`Error removing user from '${tagName}' tag: ${error.message}`, '400')
-  }
-}
-
-/**
- * Preconditions:
- * * The tag must exists
- * * The list must exists
- * * The username must exists
- *
- * @param {*} parent
- * @param { tagId, listId, username } args
- * @param {*} context
- * @param {*} info
- * @returns { Response }
- */
-const addTagToList = async (parent, { tagId, listId, username }, context, info) => {
-  try {
-    let user = await UserModel.findOneAndUpdate({ username, 'lists._id': mongoose.Types.ObjectId(listId) },
-      {
-        $addToSet: {
-          'lists.$.tags': mongoose.Types.ObjectId(tagId)
-        }
-      },
-      {
-        _id: 1
-      }
-    )
-
-    TagModel.findOneAndUpdate(
-      { _id: mongoose.Types.ObjectId(tagId) },
-      {
-        $addToSet: {
-          users: mongoose.Types.ObjectId(user._id)
-        }
-      }
-    )
-
-    return {
-      msg: `Tag added successfully to user's list.`,
-      status: 200,
-      errors: []
-    }
-  } catch (error) {
-    console.log(error)
-    throw new ApolloError(`Error adding tag to list: ${error.message}`, '400')
+    throw new ApolloError(`Error removing user from '${name}' tag: ${error.message}`, '400')
   }
 }
 
@@ -146,13 +111,22 @@ const addTagToList = async (parent, { tagId, listId, username }, context, info) 
  * @param {*} info
  * @returns { Response }
  */
-const removeTagFromList = async (parent, { username, listId, tagId }, context, info) => {
+const removeTagsFromList = async (parent, { id, input }, context, info) => {
   try {
-    await UserModel.findOneAndUpdate(
-      { username, 'lists._id': listId },
+    let userId = mongoose.Types.ObjectId(uid)
+    let tagsIds = input.map(({ id }) => mongoose.Types.ObjectId(id))
+    await ListModel.updateOne({ _id: mongoose.Types.ObjectId(id) },
       {
         $pull: {
-          'lists.$.tags': mongoose.Types.ObjectId(tagId)
+          tags: { $in: tagsIds }
+        }
+      }
+    )
+
+    await TagModel.updateMany({ _id: tagsIds },
+      {
+        $pull: {
+          users: userId
         }
       }
     )
@@ -168,9 +142,50 @@ const removeTagFromList = async (parent, { username, listId, tagId }, context, i
   }
 }
 
+/**
+ * @description: add tags to list.
+ *
+ * IMPORTANT: In TagModel doesn't put the ListId.
+ * Tag is associated to Users
+ *
+ * @param {*} parent
+ * @param { tags, id } args
+ * @param {*} context
+ * @param {*} info
+ * @return { Response }
+ */
+const addTagsToList = async (parent, { input, id }, context, info) => {
+  try {
+    let userId = mongoose.Types.ObjectId(uid)
+    let tagsIds = input.map(({ id }) => mongoose.Types.ObjectId(id))
+    await TagModel.updateMany({ _id: tagsIds },
+      {
+        $addToSet: {
+          users: userId
+        }
+      }
+    )
+
+    await ListModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) },
+      {
+        $addToSet: { tags: { $each: tagsIds } }
+      }
+    )
+
+    return {
+      msg: `Added tags to list.`,
+      status: 200,
+      errors: []
+    }
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError(`Error adding tags to list: ${error.message}`)
+  }
+}
+
 module.exports = {
-  createTag,
+  addUserToTag,
   removeUserFromTag,
-  addTagToList,
-  removeTagFromList
+  addTagsToList,
+  removeTagsFromList
 }

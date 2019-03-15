@@ -9,6 +9,7 @@ type List {
   title: String!
   items: [Item]
   tags: [Tag]
+  sharedWith: [User]
   createdBy: User!
   createdAt: String!
   updatedAt: String!

@@ -2,6 +2,7 @@ type Note {
   _id: ID!
   title: String
   content: String
+  tags: [Tag]
   sharedWith: [User]
   createdBy: User!
   createdAt: String!

@@ -6,8 +6,6 @@ const { ApolloError } = require('apollo-server-express')
 const UserModel = require('../../../models/User')
 const ListModel = require('../../../models/List')
 
-let uid = '5c8b23ac145b1136f4b6b244'
-
 /**
  * @description: Creates a new list and set the list's title
  *

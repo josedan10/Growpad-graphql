@@ -3,6 +3,7 @@ const userMutations = require('./mutations/userMutations')
 const tagsMutations = require('./mutations/tagsMutations')
 const interestMutations = require('./mutations/interestMutations')
 const listMutations = require('./mutations/listMutations')
+const notesMutations = require('./mutations/notesMutations')
 
 // Queries
 const userQueries = require('./queries/userQueries')
@@ -18,6 +19,8 @@ const {
 const {
   userInterests,
   userLists,
+  userNotes,
+  sharedWith,
   createdBy
 } = require('./userResolvers')
 
@@ -29,10 +32,15 @@ const {
   listTags
 } = require('./listResolvers')
 
+const {
+  noteTags
+} = require('./noteResolvers')
+
 const resolvers = {
   User: {
     interests: userInterests,
-    lists: userLists
+    lists: userLists,
+    notes: userNotes
   },
 
   Tag: {
@@ -45,6 +53,13 @@ const resolvers = {
 
   List: {
     tags: listTags,
+    sharedWith,
+    createdBy
+  },
+
+  Note: {
+    tags: noteTags,
+    sharedWith,
     createdBy
   },
 
@@ -59,7 +74,8 @@ const resolvers = {
     ...userMutations,
     ...tagsMutations,
     ...interestMutations,
-    ...listMutations
+    ...listMutations,
+    ...notesMutations
   }
 }
 

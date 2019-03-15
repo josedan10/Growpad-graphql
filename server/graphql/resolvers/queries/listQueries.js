@@ -81,13 +81,13 @@ const getListsByTag = async (parent, { tagName }, context, info) => {
  * @param {*} info
  * @returns
  */
-const getListsByDateInterval = async (parent, { start, finish }, context, info) => {
+const getListsByDateInterval = async (parent, { start = moment(), finish = moment() }, context, info) => {
   try {
     return await ListModel.find(
       {
         updatedAt: {
-          $gte: moment(start),
-          $lte: moment(finish)
+          $gte: moment(start).toISOString(),
+          $lte: moment(finish).toISOString()
         }
       }
     )
