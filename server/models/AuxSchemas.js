@@ -1,43 +1,11 @@
 const mongoose = require('mongoose')
 const moment = require('moment')
 
-const TagModel = require('./Tag')
-
 const schemaOptions = {
   timestamps: true
 }
 
 // The user can't create lists, usually TODOs Lists
-const listSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Please identify your list.']
-  },
-  items: [{
-    name: {
-      type: String,
-      required: true
-    },
-    checked: {
-      type: Boolean,
-      default: false
-    }
-  }],
-  tags: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Tag',
-    index: { unique: true, dropDups: true }
-  }]
-}, schemaOptions)
-
-// The user can create notes
-const noteSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    default: moment().format('ddd, MMM Do YYYY at h:mm:ss')
-  },
-  content: String
-}, schemaOptions)
 
 const movementSchema = new mongoose.Schema({
   type: {
@@ -71,7 +39,5 @@ const walletSchema = new mongoose.Schema({
 
 module.exports = {
   walletSchema,
-  schemaOptions,
-  noteSchema,
-  listSchema
+  schemaOptions
 }

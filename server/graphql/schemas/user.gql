@@ -1,26 +1,3 @@
-type Item {
-  _id: ID!
-  name: String!
-  checked: Boolean
-}
-
-type List {
-  _id: ID!
-  title: String!
-  items: [Item],
-  tags: [Tag],
-  createdAt: String!
-  updatedAt: String!
-}
-
-type Note {
-  _id: ID!
-  title: String
-  content: String
-  createdAt: String!
-  updatedAt: String!
-}
-
 enum MovementType {
   deposit
   withdrawal

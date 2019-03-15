@@ -10,38 +10,8 @@ input InputSignUp {
   sex: Sex!
 }
 
-input InputCreateList {
-  username: String!
-  title: String!
-}
-
-input InputUsernameList {
-  username: String!
-  listId: ID!
-}
-
 # User mutations
 type Mutation {
   signUp (input: InputSignUp): User
-  createList (input: InputCreateList): Response
-  changeListTitle (
-    input: InputUsernameList,
-    listTitle: String!
-  ): Response
-  deleteList (input: InputUsernameList): Response
-  addItemToList (
-    input: InputUsernameList,
-    itemName: String!
-  ): Response
-  modifyListItem (
-    input: InputUsernameList,
-    itemName: String!,
-    isChecked: Boolean!,
-    itemId: ID!
-  ): Response
-
-  deleteListItem (
-    input: InputUsernameList,
-    itemId: ID!
-  ): Response
+  
 }

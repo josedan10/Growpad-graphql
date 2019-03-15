@@ -1,0 +1,9 @@
+type Note {
+  _id: ID!
+  title: String
+  content: String
+  sharedWith: [User]
+  createdBy: User!
+  createdAt: String!
+  updatedAt: String!
+}

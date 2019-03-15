@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
+const moment = require('moment')
 const { schemaOptions } = require('./AuxSchemas')
-// const UserModel = require('./User')
 
 const tagSchema = new mongoose.Schema({
   name: {
@@ -11,10 +11,14 @@ const tagSchema = new mongoose.Schema({
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      index: { unique: true, dropDups: true }
+      ref: 'User'
     }
   ]
 }, schemaOptions)
+
+tagSchema.pre('update', function (next) {
+  this.update({}, { $set: { updatedAt: moment() } })
+  next()
+})
 
 module.exports = mongoose.model('Tag', tagSchema)

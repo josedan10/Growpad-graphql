@@ -1,0 +1,19 @@
+input InputItems {
+  name: String!
+  checked: Boolean!
+}
+
+extend type Mutation {
+  createList (title: String!): Response
+
+  deleteList (
+    id: ID!
+  ): Response
+
+  modifyList (
+    id: ID!,
+    title: String,
+    input: [InputItems]
+  ): Response
+
+}

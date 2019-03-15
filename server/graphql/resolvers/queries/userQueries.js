@@ -55,98 +55,6 @@ const getUserByUsername = async (parent, { username }, context, info) => {
   }
 }
 
-/**
- *
- *
- * @param {*} parent
- * @param { username } args
- * @param {*} context
- * @param {*} info
- * @returns {[ Lists ]}
- */
-const getUserLists = async (parent, { username }, context, info) => {
-  try {
-    let user = await UserModel.findOne({ username }, { lists: 1 })
-    return user.lists
-  } catch (error) {
-    throw new ApolloError(`Error getting ${username}'s lists.`, '404')
-  }
-}
-
-/**
- *
- *
- * @param {*} parent
- * @param { username, listId } args
- * @param {*} context
- * @param {*} info
- * @returns { List }
- */
-const getUserListById = async (parent, { username, listId }, context, info) => {
-  try {
-    let user = await UserModel.findOne({ username }, { lists: 1 })
-    return _.find(user.lists, { _id: mongoose.Types.ObjectId(listId) })
-  } catch (error) {
-    throw new ApolloError(`Error getting list.`, '404')
-  }
-}
-
-/**
- *
- *
- * @param {*} parent
- * @param { username, listTitle } args
- * @param {*} context
- * @param {*} info
- * @returns {[ Lists ]}
- */
-const getUserListsByTitle = async (parent, { username, listTitle }, context, info) => {
-  try {
-    let user = await UserModel.findOne({ username }, { lists: 1 })
-    let regex = new RegExp(listTitle, 'gi')
-    let lists = _.find(user.lists, (list) => regex.test(list.title))
-
-    return (Array.isArray(lists)) ? lists : new Array(lists)
-  } catch (error) {
-    throw new ApolloError(`Error getting lists: ${error.message}`, '400')
-  }
-}
-
-// const getUserListsBeforeDate = async (parent, args, context, info) => {
-
-// }
-
-/**
- *
- *
- * @param {*} parent
- * @param { tagName, username } args
- * @param {*} context
- * @param {*} info
- * @returns {[ Lists ]}
- */
-const getUserListsByTag = async (parent, { tagName, username }, context, info) => {
-  try {
-    let user = UserModel.findOne({ username },
-      {
-        lists: 1
-      }
-    )
-
-    let regex = new RegExp(tagName, 'gi')
-    let lists = []
-    _.find(user.lists, (list) => {
-      list.tags.forEach((tag) => {
-        if (regex.test(tag.name)) lists.push(list)
-      })
-    })
-
-    return (Array.isArray(lists)) ? lists : new Array(lists)
-  } catch (error) {
-    throw new ApolloError(`Error getting lists by tagname '${tagName}': ${error.message}`, '400')
-  }
-}
-
 const getUserTags = async (parent, { userId }, context, info) => {
   try {
     return TagModel.find({ users: userId }, { name: 1 })
@@ -160,9 +68,5 @@ module.exports = {
   getUsers,
   getUserById,
   getUserByUsername,
-  getUserLists,
-  getUserListById,
-  getUserListsByTitle,
-  getUserListsByTag,
   getUserTags
 }

@@ -1,19 +1,23 @@
-# Inputs' mutations
-input InputUserIdTagName {
-  tagName: String!
-  userId: ID!
-}
-
-input InputTagList {
-  tagId: ID!
-  username: String!
-  listId: ID!
-}
-
 # Tag mutations
 extend type Mutation {
-  createTag (input: InputUserIdTagName): Tag
-  removeUserFromTag (input: InputUserIdTagName): Response
-  addTagToList (input: InputTagList): Response
-  removeTagFromList (input: InputTagList): Response
+  createTag (
+    tagName: String!
+    userId: ID!
+  ): Tag
+
+  removeUserFromTag (
+    tagName: String!
+    userId: ID!
+  ): Response
+
+  addTagToList (
+    tagId: ID!
+    username: String!
+    listId: ID!
+  ): Response
+
+  removeTagFromList (
+    tagName: String!
+    userId: ID!
+  ): Response
 }

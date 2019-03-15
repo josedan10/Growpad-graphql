@@ -1,0 +1,15 @@
+type Item {
+  _id: ID!
+  name: String!
+  checked: Boolean
+}
+
+type List {
+  _id: ID!
+  title: String!
+  items: [Item]
+  tags: [Tag]
+  createdBy: User!
+  createdAt: String!
+  updatedAt: String!
+}

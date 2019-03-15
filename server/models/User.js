@@ -10,7 +10,8 @@
 const mongoose = require('mongoose')
 const validate = require('validate.js')
 const bcrypt = require('bcrypt-nodejs')
-const { schemaOptions, listSchema, walletSchema, noteSchema } = require('./AuxSchemas')
+const moment = require('moment')
+const { schemaOptions, walletSchema } = require('./AuxSchemas')
 
 const HASH_SALT_AROUNDS = process.env.HASH_SALT_AROUNDS || 10
 
@@ -64,8 +65,14 @@ const userSchema = new mongoose.Schema({
     enum: ['M', 'F'],
     required: [true, 'You must specified your sex.']
   },
-  notes: [noteSchema],
-  lists: [listSchema],
+  notes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Note'
+  }],
+  lists: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'List'
+  }],
   type: {
     type: String,
     enum: ['premium', 'admin', 'standard'],
@@ -93,8 +100,7 @@ userSchema
     this.passConf = passConf
   })
 
-userSchema.post('validate', function (next) {
-  let user = this
+userSchema.post('validate', function (user, next) {
 
   if (user.isModified('password')) {
     let salt = bcrypt.genSaltSync(HASH_SALT_AROUNDS)
@@ -104,6 +110,11 @@ userSchema.post('validate', function (next) {
   }
 
   return next()
+})
+
+userSchema.pre('update', function (next) {
+  this.update({}, { $set: { updatedAt: moment() } })
+  next()
 })
 
 module.exports = mongoose.model('User', userSchema)

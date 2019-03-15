@@ -2,11 +2,13 @@
 const userMutations = require('./mutations/userMutations')
 const tagsMutations = require('./mutations/tagsMutations')
 const interestMutations = require('./mutations/interestMutations')
+const listMutations = require('./mutations/listMutations')
 
 // Queries
 const userQueries = require('./queries/userQueries')
 const tagQueries = require('./queries/tagQueries')
 const interestQueries = require('./queries/interestQueries')
+const listQueries = require('./queries/listQueries')
 
 // Resolvers
 const {
@@ -14,17 +16,23 @@ const {
 } = require('./tagResolvers')
 
 const {
-  listTags,
-  userInterests
+  userInterests,
+  userLists,
+  createdBy
 } = require('./userResolvers')
 
 const {
   interestUsers
 } = require('./interestResolvers')
 
+const {
+  listTags
+} = require('./listResolvers')
+
 const resolvers = {
   User: {
-    interests: userInterests
+    interests: userInterests,
+    lists: userLists
   },
 
   Tag: {
@@ -36,19 +44,22 @@ const resolvers = {
   },
 
   List: {
-    tags: listTags
+    tags: listTags,
+    createdBy
   },
 
   Query: {
     ...userQueries,
     ...tagQueries,
-    ...interestQueries
+    ...interestQueries,
+    ...listQueries
   },
 
   Mutation: {
     ...userMutations,
     ...tagsMutations,
-    ...interestMutations
+    ...interestMutations,
+    ...listMutations
   }
 }
 

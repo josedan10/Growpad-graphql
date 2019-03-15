@@ -2,19 +2,9 @@ const mongoose = require('mongoose')
 const { ApolloError } = require('apollo-server-express')
 
 // Models
-const TagModel = require('../../models/Tag')
 const InterestModel = require('../../models/Interest')
-
-const listTags = (list) => {
-  try {
-    return Promise.all(
-      list.tags.map(({ id }) => TagModel.findById(mongoose.Types.ObjectId(id)))
-    )
-  } catch (error) {
-    console.log(error)
-    throw new ApolloError(`Error getting users of ${list.title}: ${error.message}`, '400')
-  }
-}
+const ListModel = require('../../models/List')
+const UserModel = require('../../models/User')
 
 const userInterests = (user) => {
   try {
@@ -23,11 +13,32 @@ const userInterests = (user) => {
     )
   } catch (error) {
     console.log(error)
-    throw new ApolloError(`Error getting users of ${user.title}: ${error.message}`, '400')
+    throw new ApolloError(`Error getting users of ${user.username}: ${error.message}`, '400')
+  }
+}
+
+const userLists = (user) => {
+  try {
+    return Promise.all(
+      user.lists.map(({ id }) => ListModel.findById(mongoose.Types.ObjectId(id)))
+    )
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError(`Error getting users of ${user.username}: ${error.message}`, '400')
+  }
+}
+
+const createdBy = async (object) => {
+  try {
+    return await UserModel.findById(mongoose.Types.ObjectId(object.createdBy))
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError(`Error getting user: ${error.message}`)
   }
 }
 
 module.exports = {
-  listTags,
-  userInterests
+  userInterests,
+  userLists,
+  createdBy
 }
