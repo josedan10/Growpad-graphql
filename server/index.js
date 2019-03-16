@@ -28,7 +28,11 @@ const port = SERVER_PORT
 const host = SERVER_HOST
 const gqlServer = new ApolloServer({
   schema,
-  context: ({ req, res }) => ({ req, res })
+  cors: false,
+  context: ({ req, res }) => ({ req, res }),
+  playground: IN_PROD ? (false) : {
+    'request.credentials': 'include'
+  }
 })
 
 const RedisStore = ConnectRedis(session)

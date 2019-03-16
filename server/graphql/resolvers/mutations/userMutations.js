@@ -36,11 +36,13 @@ const UserModel = require('../../../models/User')
  * @param {*} info
  * @returns { User | ApolloError }
  */
-const signUp = async (parent, { input }, { req }, info) => {  
+const signUp = async (parent, { input }, { req }, info) => {
   AuthMiddleware.checkLogout(req)
 
   try {
-    return await UserModel.create(input)
+    let user = await UserModel.create(input)
+    req.session.uid = user.id
+    return user
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error creating user '${input.username}'.`, '400')
@@ -49,13 +51,11 @@ const signUp = async (parent, { input }, { req }, info) => {
 
 const login = async (parent, args, { req }, info) => {
   try {
-    let userId = AuthMiddleware.checkLogout(req)
-
-    if (userId) return await UserModel.findById(userId)
-
+    AuthMiddleware.checkLogout(req)
+    // console.log(req.session)
     await Joi.validate(args, loginValidator, { abortEarly: false })
 
-    let user = AuthMiddleware.attemptLogin(args)
+    let user = await AuthMiddleware.attemptLogin(args)
     req.session.uid = user.id
     return user
   } catch (error) {
