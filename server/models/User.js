@@ -117,4 +117,12 @@ userSchema.pre('update', function (next) {
   next()
 })
 
+userSchema.statics.doesntExists = async function (options) {
+  return await this.where(options).countDocuments === 0
+}
+
+userSchema.methods.matchesPassword = function (password) {
+  return bcrypt.compareSync(password, this.password)
+}
+
 module.exports = mongoose.model('User', userSchema)

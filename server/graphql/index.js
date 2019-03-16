@@ -25,8 +25,7 @@ let mutations = mutationsDir.map(fileName => fs.readFileSync(path.resolve(`./gra
 const fileSchema = makeExecutableSchema({
   typeDefs: [...schemas, ...queries, ...mutations],
   resolvers,
-  schemaDirectives: { constraint: ConstraintDirective },
-  mocks: true
+  schemaDirectives: { constraint: ConstraintDirective }
 })
 
 const schema = fileSchema

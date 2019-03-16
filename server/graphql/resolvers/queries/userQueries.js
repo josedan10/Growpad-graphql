@@ -3,6 +3,8 @@ const moment = require('moment')
 const { UserInputError, ApolloError } = require('apollo-server-express')
 const _ = require('lodash')
 
+const AuthMiddleware = require('../../../middlewares/auth')
+
 // Models
 const UserModel = require('../../../models/User')
 const TagModel = require('../../../models/Tag')
@@ -16,7 +18,15 @@ const TagModel = require('../../../models/Tag')
  * @param {*} info
  * @returns {[ Users ]}
  */
-const getUsers = async (parent, args, context, info) => UserModel.find({})
+const getUsers = async (parent, args, { req }, info) => {
+  AuthMiddleware.checkLogin(req)
+
+  try {
+    return UserModel.find({})
+  } catch (error) {
+    throw new ApolloError(`Error getting users: ${error.message}.`)
+  }
+}
 
 /**
  *
@@ -55,18 +65,19 @@ const getUserByUsername = async (parent, { username }, context, info) => {
   }
 }
 
-const getUserTags = async (parent, { userId }, context, info) => {
+const me = async (parent, args, { req }, info) => {
+  let userId = mongoose.Types.ObjectId(AuthMiddleware.checkLogin(req))
   try {
-    return TagModel.find({ users: userId }, { name: 1 })
+    return UserModel.findById(userId)
   } catch (error) {
     console.log(error)
-    throw new ApolloError(`Error getting tags of user: ${error.message}`)
+    throw new ApolloError(`Error finding the user: ${error.message}`)
   }
 }
 
 module.exports = {
+  me,
   getUsers,
   getUserById,
-  getUserByUsername,
-  getUserTags
+  getUserByUsername
 }

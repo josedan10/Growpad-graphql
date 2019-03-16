@@ -13,5 +13,6 @@ input InputSignUp {
 # User mutations
 type Mutation {
   signUp (input: InputSignUp): User
-  
+  login (username: String!, password: String!): User
+  logout: Boolean
 }

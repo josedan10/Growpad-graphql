@@ -1,5 +1,5 @@
 extend type Query {
   getTags: [Tag]
   getTagByName: Tag
-  getUserTags (userId: ID!): [Tag]
+  getUserTags: [Tag]
 }

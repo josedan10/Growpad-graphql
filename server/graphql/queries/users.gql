@@ -1,6 +1,6 @@
 type Query {
   # Users queries
-
+  me: User
   getUsers: [User]
   getUserById (id: ID!): User
   getUserByUsername (username: String!): User
