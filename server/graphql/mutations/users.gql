@@ -11,8 +11,8 @@ input InputSignUp {
 }
 
 # User mutations
-type Mutation {
-  signUp (input: InputSignUp): User
-  login (username: String!, password: String!): User
-  logout: Boolean
+extend type Mutation {
+  signUp (input: InputSignUp): User @guest
+  login (username: String!, password: String!): User @guest
+  logout: Boolean @auth
 }

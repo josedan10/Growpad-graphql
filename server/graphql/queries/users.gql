@@ -1,7 +1,7 @@
-type Query {
+extend type Query {
   # Users queries
-  me: User
-  getUsers: [User]
-  getUserById (id: ID!): User
-  getUserByUsername (username: String!): User
+  me: User @auth
+  getUsers: [User] @auth
+  getUserById (id: ID!): User @auth
+  getUserByUsername (username: String!): User @auth
 }

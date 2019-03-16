@@ -1,7 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 const { makeExecutableSchema } = require('graphql-tools')
-const ConstraintDirective = require('graphql-constraint-directive')
+
+// Directives
+const schemaDirectives = require('./directives')
 
 const resolvers = require('./resolvers')
 
@@ -25,7 +27,7 @@ let mutations = mutationsDir.map(fileName => fs.readFileSync(path.resolve(`./gra
 const fileSchema = makeExecutableSchema({
   typeDefs: [...schemas, ...queries, ...mutations],
   resolvers,
-  schemaDirectives: { constraint: ConstraintDirective }
+  schemaDirectives
 })
 
 const schema = fileSchema

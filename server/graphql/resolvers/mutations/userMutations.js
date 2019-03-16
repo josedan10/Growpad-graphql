@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const { ApolloError } = require('apollo-server-express')
 const Joi = require('joi')
 const AuthMiddleware = require('../../../middlewares/auth')
@@ -37,8 +36,6 @@ const UserModel = require('../../../models/User')
  * @returns { User | ApolloError }
  */
 const signUp = async (parent, { input }, { req }, info) => {
-  AuthMiddleware.checkLogout(req)
-
   try {
     let user = await UserModel.create(input)
     req.session.uid = user.id
@@ -50,8 +47,7 @@ const signUp = async (parent, { input }, { req }, info) => {
 }
 
 const login = async (parent, args, { req }, info) => {
-  try {
-    AuthMiddleware.checkLogout(req)
+  try {    
     // console.log(req.session)
     await Joi.validate(args, loginValidator, { abortEarly: false })
 
@@ -65,7 +61,6 @@ const login = async (parent, args, { req }, info) => {
 }
 
 const logout = async (parent, args, { req, res }, info) => {
-  AuthMiddleware.checkLogin(req)
   return AuthMiddleware.logout(req, res)
 }
 
