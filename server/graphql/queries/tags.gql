@@ -1,5 +1,5 @@
 extend type Query {
-  getTags: [Tag]
-  getTagByName: Tag
-  getUserTags: [Tag]
+  getTags: [Tag] @auth
+  getTagByName: Tag @auth
+  getUserTags: [Tag] @auth
 }

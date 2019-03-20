@@ -6,6 +6,7 @@ const { SESS_NAME } = require('../config')
 const UserModel = require('../models/User')
 
 const loggedIn = req => req.session.uid
+const isAdmin = req => req.session.userType === 'admin'
 
 const attemptLogin = async ({ username, password }) => {
   let user = await UserModel.findOne({ username })
@@ -43,9 +44,17 @@ const logout = (req, res) => new Promise((resolve, reject) => {
   })
 })
 
+const checkAdminUser = (req) => {
+  if (!isAdmin(req)) {
+    throw new AuthenticationError(`You don't have permisions access to this info.`, 401)
+  }
+  return isAdmin(req)
+}
+
 module.exports = {
   attemptLogin,
   logout,
   checkLogin,
-  checkLogout
+  checkLogout,
+  checkAdminUser
 }

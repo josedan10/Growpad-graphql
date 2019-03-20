@@ -1,7 +1,7 @@
 extend type Query {
-  getNotes: [Note]
-  getNoteById (id: ID!): Note
-  getNotesByTitle (title: String!): [Note]
-  getNotesByTag (tagName: String!): [Note]
-  getNotesByDateInterval (start: String, finish: String): [Note]
+  getNotes: [Note] @auth
+  getNoteById (id: ID!): Note @auth
+  getNotesByTitle (title: String!): [Note] @auth
+  getNotesByTag (tagName: String!): [Note] @auth
+  getNotesByDateInterval (start: String, finish: String): [Note] @auth
 }

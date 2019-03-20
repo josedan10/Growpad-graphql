@@ -15,4 +15,6 @@ class GuestDirective extends SchemaDirectiveVisitor {
   }
 }
 
-module.exports = GuestDirective
+module.exports = {
+  guest: GuestDirective
+}

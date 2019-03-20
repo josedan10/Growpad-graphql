@@ -1,4 +1,4 @@
 extend type Query {
-  getInterests: [Interest]
-  getInterestByName (name: String!): Interest
+  getInterests: [Interest] @auth
+  getInterestByName (name: String!): Interest @auth
 }

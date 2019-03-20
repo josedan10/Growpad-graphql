@@ -1,7 +1,7 @@
 extend type Query {
-  getLists: [List]
-  getListById (id: ID!): List
-  getListsByTitle (title: String!): [List]
-  getListsByTag (tagName: String!): [List]
-  getListsByDateInterval (start: String, finish: String): [List]
+  getLists: [List] @auth
+  getListById (id: ID!): List @auth
+  getListsByTitle (title: String!): [List] @auth
+  getListsByTag (tagName: String!): [List] @auth
+  getListsByDateInterval (start: String, finish: String): [List] @auth
 }
