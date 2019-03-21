@@ -65,7 +65,7 @@ const getUserByUsername = async (parent, { username }, context, info) => {
   }
 }
 
-const me = async (parent, args, { req }, info) => {
+const profile = async (parent, args, { req }, info) => {
   let userId = mongoose.Types.ObjectId(AuthMiddleware.checkLogin(req))
   try {
     return UserModel.findById(userId)
@@ -76,7 +76,7 @@ const me = async (parent, args, { req }, info) => {
 }
 
 module.exports = {
-  me,
+  profile,
   getUsers,
   getUserById,
   getUserByUsername

@@ -1,4 +1,5 @@
 const { ApolloError } = require('apollo-server-express')
+const mongoose = require('mongoose')
 const Joi = require('joi')
 const AuthMiddleware = require('../../../middlewares/auth')
 
@@ -64,8 +65,22 @@ const logout = async (parent, args, { req, res }, info) => {
   return AuthMiddleware.logout(req, res)
 }
 
+const changeUserType = async (parent, { id, type }, context, info) => {
+  try {
+    return await UserModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId() },
+      {
+        $set: { type }
+      }
+    )
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError(`Error changing the user type: ${error.message}`, 400)
+  }
+}
+
 module.exports = {
   signUp,
   login,
-  logout
+  logout,
+  changeUserType
 }

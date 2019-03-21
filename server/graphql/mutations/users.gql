@@ -13,6 +13,8 @@ input InputSignUp {
 # User mutations
 extend type Mutation {
   signUp (input: InputSignUp): User @guest
+  createUserAdmin (input: InputSignUp): User @auth @admin
+  changeUserType (id: ID!, type: String!): User @auth @admin
   login (username: String!, password: String!): User @guest
   logout: Boolean @auth
 }

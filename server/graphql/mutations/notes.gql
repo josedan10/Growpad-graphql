@@ -2,15 +2,15 @@ extend type Mutation {
   createNote (
     title: String
     content: String!
-  ): Response
+  ): Response @auth
 
   modifyNote (
     id: ID!
     title: String
     content: String!
-  ): Response
+  ): Response @auth
 
   deleteNote (
     id: ID!
-  ): Response
+  ): Response @auth
 }

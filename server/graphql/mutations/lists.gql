@@ -4,16 +4,16 @@ input InputItems {
 }
 
 extend type Mutation {
-  createList (title: String!): Response
+  createList (title: String!): Response @auth
 
   deleteList (
     id: ID!
-  ): Response
+  ): Response @auth
 
   modifyList (
     id: ID!
     title: String
     input: [InputItems]
-  ): Response
+  ): Response @auth
 
 }

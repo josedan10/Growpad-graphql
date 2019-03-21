@@ -1,6 +1,6 @@
 extend type Query {
   # Users queries
-  me: User @auth
+  profile: User @auth
   getUsers: [User] @auth @admin
   getUserById (id: ID!): User @auth @admin
   getUserByUsername (username: String!): User @auth

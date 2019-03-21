@@ -6,30 +6,30 @@ input InputTagIds {
 extend type Mutation {
   addUserToTag (
     name: String!
-  ): Response
+  ): Response @auth
 
   removeUserFromTag (
     name: String!
     userId: ID!
-  ): Response
+  ): Response @auth
 
   addTagsToList (
     id: ID!
     input: [InputTagIds]
-  ): Response
+  ): Response @auth
 
   removeTagsFromList (
     id: ID!
     input: [InputTagIds]
-  ): Response
+  ): Response @auth
 
   addTagsToNote (
     id: ID!
     input: [InputTagIds]
-  ): Response
+  ): Response @auth
 
   removeTagsFromNote (
     id: ID!
     input: [InputTagIds]
-  ): Response
+  ): Response @auth
 }
