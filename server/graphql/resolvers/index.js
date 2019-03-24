@@ -69,15 +69,7 @@ const resolvers = {
     ...tagQueries,
     ...interestQueries,
     ...listQueries,
-    ...notesQueries,
-    test: (parent, args, context, info) => {
-      // console.log('Parent', parent)
-      // console.log('Args', args)
-      // console.log('Context', context)
-      // console.log('Info', info)
-
-      return args.text
-    }
+    ...notesQueries
   },
 
   Mutation: {

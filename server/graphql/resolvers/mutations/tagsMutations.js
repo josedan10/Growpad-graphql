@@ -112,19 +112,20 @@ const removeUserFromTag = async (parent, { name }, context, info) => {
  * @param {*} info
  * @returns { Response }
  */
-const removeTagsFromList = async (parent, { id, input }, context, info) => {
+const removeTagsFromList = async (parent, { id, tagIds }, { req }, info) => {
   try {
+    let { uid } = req
     let userId = mongoose.Types.ObjectId(uid)
-    let tagsIds = input.map(({ id }) => mongoose.Types.ObjectId(id))
+    tagIds = tagIds.map((id) => mongoose.Types.ObjectId(id))
     await ListModel.updateOne({ _id: mongoose.Types.ObjectId(id) },
       {
         $pull: {
-          tags: { $in: tagsIds }
+          tags: { $in: tagIds }
         }
       }
     )
 
-    await TagModel.updateMany({ _id: tagsIds },
+    await TagModel.updateMany({ _id: tagIds },
       {
         $pull: {
           users: userId
@@ -155,11 +156,12 @@ const removeTagsFromList = async (parent, { id, input }, context, info) => {
  * @param {*} info
  * @return { Response }
  */
-const addTagsToList = async (parent, { input, id }, context, info) => {
+const addTagsToList = async (parent, { tagIds, id }, { req }, info) => {
   try {
+    let { uid } = req
     let userId = mongoose.Types.ObjectId(uid)
-    let tagsIds = input.map(({ id }) => mongoose.Types.ObjectId(id))
-    await TagModel.updateMany({ _id: tagsIds },
+    tagIds = tagIds.map((id) => mongoose.Types.ObjectId(id))
+    await TagModel.updateMany({ _id: tagIds },
       {
         $addToSet: {
           users: userId
@@ -169,7 +171,7 @@ const addTagsToList = async (parent, { input, id }, context, info) => {
 
     await ListModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) },
       {
-        $addToSet: { tags: { $each: tagsIds } }
+        $addToSet: { tags: { $each: tagIds } }
       }
     )
 
@@ -196,19 +198,20 @@ const addTagsToList = async (parent, { input, id }, context, info) => {
  * @param {*} info
  * @returns { Response }
  */
-const removeTagsFromNote = async (parent, { id, input }, context, info) => {
+const removeTagsFromNote = async (parent, { tagIds, id }, { req }, info) => {
   try {
+    let { uid } = req
     let userId = mongoose.Types.ObjectId(uid)
-    let tagsIds = input.map(({ id }) => mongoose.Types.ObjectId(id))
+    tagIds = tagIds.map((id) => mongoose.Types.ObjectId(id))
     await NoteModel.updateOne({ _id: mongoose.Types.ObjectId(id) },
       {
         $pull: {
-          tags: { $in: tagsIds }
+          tags: { $in: tagIds }
         }
       }
     )
 
-    await TagModel.updateMany({ _id: tagsIds },
+    await TagModel.updateMany({ _id: tagIds },
       {
         $pull: {
           users: userId
@@ -239,11 +242,12 @@ const removeTagsFromNote = async (parent, { id, input }, context, info) => {
  * @param {*} info
  * @return { Response }
  */
-const addTagsToNote = async (parent, { input, id }, context, info) => {
+const addTagsToNote = async (parent, { tagIds, id }, { req }, info) => {
   try {
+    let { uid } = req
     let userId = mongoose.Types.ObjectId(uid)
-    let tagsIds = input.map(({ id }) => mongoose.Types.ObjectId(id))
-    await TagModel.updateMany({ _id: tagsIds },
+    tagIds = tagIds.map((id) => mongoose.Types.ObjectId(id))
+    await TagModel.updateMany({ _id: tagIds },
       {
         $addToSet: {
           users: userId
@@ -253,7 +257,7 @@ const addTagsToNote = async (parent, { input, id }, context, info) => {
 
     await NoteModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) },
       {
-        $addToSet: { tags: { $each: tagsIds } }
+        $addToSet: { tags: { $each: tagIds } }
       }
     )
 

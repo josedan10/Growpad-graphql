@@ -10,11 +10,13 @@ const UserModel = require('../../models/User')
  * @param {*} interest
  * @returns {[ Users ]}
  */
-const interestUsers = (interest) => {
+const interestUsers = async (interest, args, context, info) => {
   try {
-    return Promise.all(
-      interest.users.map(({ id }) => UserModel.findById(mongoose.Types.ObjectId(id)))
-    )
+    await interest.populate('users').execPopulate()
+    return interest.users
+    // return Promise.all(
+    //   interest.users.map(({ id }) => UserModel.findById(mongoose.Types.ObjectId(id)))
+    // )
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error getting users of ${interest.name}: ${error.message}`, '400')

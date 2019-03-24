@@ -48,12 +48,13 @@ const signUp = async (parent, { input }, { req }, info) => {
 }
 
 const login = async (parent, args, { req }, info) => {
-  try {    
+  try {
     // console.log(req.session)
     await Joi.validate(args, loginValidator, { abortEarly: false })
 
     let user = await AuthMiddleware.attemptLogin(args)
     req.session.uid = user.id
+    req.session.userType = user.type
     return user
   } catch (error) {
     console.log(error)

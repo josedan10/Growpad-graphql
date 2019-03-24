@@ -1,6 +1,6 @@
-input InputTagIds {
-  id: ID
-}
+# input ID!]!{
+#   id: ID
+# }
 
 # Tag mutations
 extend type Mutation {
@@ -15,21 +15,21 @@ extend type Mutation {
 
   addTagsToList (
     id: ID!
-    input: [InputTagIds]
+    tagIds: [ID!]!
   ): Response @auth
 
   removeTagsFromList (
     id: ID!
-    input: [InputTagIds]
+    tagIds: [ID!]!
   ): Response @auth
 
   addTagsToNote (
     id: ID!
-    input: [InputTagIds]
+    tagIds: [ID!]!
   ): Response @auth
 
   removeTagsFromNote (
     id: ID!
-    input: [InputTagIds]
+    tagIds: [ID!]!
   ): Response @auth
 }

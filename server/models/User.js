@@ -11,7 +11,7 @@ const mongoose = require('mongoose')
 const validate = require('validate.js')
 const bcrypt = require('bcrypt-nodejs')
 const moment = require('moment')
-const { schemaOptions, walletSchema } = require('./AuxSchemas')
+const schemaOptions = require('./schemaOptions')
 
 const HASH_SALT_AROUNDS = process.env.HASH_SALT_AROUNDS || 10
 
@@ -65,14 +65,6 @@ const userSchema = new mongoose.Schema({
     enum: ['M', 'F'],
     required: [true, 'You must specified your sex.']
   },
-  notes: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Note'
-  }],
-  lists: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'List'
-  }],
   type: {
     type: String,
     enum: ['premium', 'admin', 'standard'],
@@ -83,7 +75,19 @@ const userSchema = new mongoose.Schema({
     enum: ['en', 'es', 'pt'],
     default: 'es'
   },
-  wallets: [walletSchema],
+  notes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Note'
+  }],
+  lists: [{
+    type: mongoose.Schema.Types.ObjectId,
+    index: { unique: true, dropDups: true },
+    ref: 'List'
+  }],
+  wallets: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Wallet'
+  }],
   interests: [{
     type: mongoose.Schema.Types.ObjectId,
     index: { unique: true, dropDups: true },

@@ -10,11 +10,13 @@ const UserModel = require('../../models/User')
  * @param {*} users
  * @returns {[ Users ]}
  */
-const tagUsers = (tag) => {
+const tagUsers = async (tag, args, context, info) => {
   try {
-    return Promise.all(
-      tag.users.map(({ id }) => UserModel.findById(mongoose.Types.ObjectId(id)))
-    )
+    await tag.populate('users').execPopulate()
+    return tag.users
+    // return Promise.all(
+    //   tag.users.map(({ id }) => UserModel.findById(mongoose.Types.ObjectId(id)))
+    // )
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error getting users of ${tag.name}: ${error.message}`, '400')

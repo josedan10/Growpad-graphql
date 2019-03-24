@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const moment = require('moment')
 
-const { schemaOptions } = require('./AuxSchemas')
+const schemaOptions = require('./schemaOptions')
 
 // The user can create notes
 const noteSchema = new mongoose.Schema({

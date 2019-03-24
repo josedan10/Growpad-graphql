@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const moment = require('moment')
-const { schemaOptions } = require('./AuxSchemas')
+const schemaOptions = require('./schemaOptions')
 
 const tagSchema = new mongoose.Schema({
   name: {
