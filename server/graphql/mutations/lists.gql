@@ -4,7 +4,7 @@ input InputItems {
 }
 
 extend type Mutation {
-  createList (title: String!): Response @auth
+  createList (title: String!): List @auth
 
   deleteList (
     id: ID!
@@ -13,7 +13,17 @@ extend type Mutation {
   modifyList (
     id: ID!
     title: String
-    input: [InputItems]
-  ): Response @auth
+    items: [InputItems]!
+  ): List @auth
+
+  shareListWith (
+    id: ID!,
+    users: [String!]!
+  ): List @auth
+
+  stopShareListWithUsers (
+    id: ID!,
+    users: [String!]!
+  ): List @auth
 
 }

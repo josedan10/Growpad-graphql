@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 const moment = require('moment')
 const { ApolloError } = require('apollo-server-express')
 
-let uid = '5c8b23ac145b1136f4b6b244'
-
 // Models
 const UserModel = require('../../../models/User')
 const ListModel = require('../../../models/List')
+
+const { ObjectId } = mongoose.Types
 
 /**
  * @description: Creates a new list and set the list's title
@@ -17,24 +17,26 @@ const ListModel = require('../../../models/List')
  * @param {*} info
  * @returns
  */
-const createList = async (parent, { title }, context, info) => {
+const createList = async (parent, { title }, { req }, info) => {
   try {
     // Get userId by authetication
-    let userId = mongoose.Types.ObjectId(uid)
-    let list = new ListModel({ title, createdBy: userId })
-    list = await list.save()
-    await UserModel.findOneAndUpdate({ _id: userId },
+    let { uid } = req.session
+    let userId = ObjectId(uid)
+    let list = await ListModel.create({ title, createdBy: userId })
+    UserModel.updateOne({ _id: userId },
       {
         $push: {
-          lists: mongoose.Types.ObjectId(list._id)
+          lists: ObjectId(list._id)
         }
       }
-    )
-    return {
-      msg: `List '${title}' successfully created.`,
-      status: 200,
-      errors: []
-    }
+    ).exec()
+
+    return list
+    // return {
+    //   msg: `List '${title}' successfully created.`,
+    //   status: 200,
+    //   errors: []
+    // }
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error creating '${title}' list`, '400')
@@ -51,22 +53,23 @@ const createList = async (parent, { title }, context, info) => {
  * @param {*} info
  * @returns { Response }
  */
-const deleteList = async (parent, { id }, context, info) => {
+const deleteList = async (parent, { id }, { req }, info) => {
   try {
-    let userId = mongoose.Types.ObjectId(uid)
+    let { uid } = req.session
+    let userId = ObjectId(uid)
     await ListModel.findOneAndDelete(
       {
-        _id: mongoose.Types.ObjectId(id),
+        _id: ObjectId(id),
         createdBy: userId
       }
     )
 
     await UserModel.updateMany(
       {
-        lists: mongoose.Types.ObjectId(id)
+        lists: ObjectId(id)
       },
       {
-        $pull: { lists: mongoose.Types.ObjectId(id) }
+        $pull: { lists: ObjectId(id) }
       }
     )
 
@@ -96,28 +99,106 @@ const deleteList = async (parent, { id }, context, info) => {
  * @param {*} info
  * @returns { List }
  */
-const modifyList = async (parent, { id, input, title }, context, info) => {
+const modifyList = async (parent, { id, items, title }, { req }, info) => {
   try {
-    await ListModel.findOneAndUpdate(
-      { _id: mongoose.Types.ObjectId(id) },
+    // TODO: verify uid in list
+    let { uid } = req.session
+    return ListModel.findOneAndUpdate(
       {
-        $set: { title, items: input }
+        _id: ObjectId(id)
+      },
+      {
+        $set: { title, items }
+      },
+      {
+        new: true
       }
     )
-
-    return {
-      msg: `List '${title}' updated successfully: saved ${input.length} items.`,
-      status: 200,
-      errors: []
-    }
   } catch (error) {
     console.log(error)
     throw new ApolloError('Error modifying item.', '400', error)
   }
 }
 
+/**
+ *
+ *
+ * @param {*} parent
+ * @param { id, users } args
+ * @param { req } context
+ * @param {*} info
+ * @returns [List]
+ */
+const shareListWith = async (parent, { id, users }, { req }, info) => {
+  try {
+    let { uid } = req.session
+    let usersDB = await UserModel.find({ username: { $in: users } }, { _id: 1 })
+
+    if (users.length !== usersDB.length) {
+      throw new ApolloError(`One or more users doesn't exists`, 404)
+    }
+
+    UserModel.updateMany(
+      { username: { $in: users } },
+      { $addToSet: { lists: ObjectId(id) } }
+    ).exec()
+
+    let usersIds = usersDB.map(user => user._id)
+    return ListModel.findByIdAndUpdate(
+      {
+        _id: ObjectId(id),
+        createdBy: ObjectId(uid)
+      },
+      {
+        $addToSet: {
+          sharedWith: { $each: usersIds }
+        }
+      },
+      {
+        new: true
+      }
+    )
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError(`Error sharing list: ${error.message}.`, 500)
+  }
+}
+
+const stopShareListWithUsers = async (parent, { id, users }, { req }, info) => {
+  try {
+    UserModel.updateMany(
+      { username: { $in: users } },
+      {
+        $pull: {
+          lists: { $each: users }
+        }
+      }
+    )
+    users = await UserModel.find({ username: { $in: users } }, { _id: 1 })
+    let userIds = users.map(user => user._id)
+    let { uid } = req
+    let userId = ObjectId(uid)
+    return ListModel.findOneAndUpdate(
+      {
+        _id: ObjectId(id),
+        createdBy: userId
+      },
+      {
+        $pull: {
+          sharedWith: { $each: userIds }
+        }
+      }
+    )
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError(`Error stopping share list: ${error.message}.`, 500)
+  }
+}
+
 module.exports = {
   createList,
   modifyList,
-  deleteList
+  deleteList,
+  shareListWith,
+  stopShareListWithUsers
 }
