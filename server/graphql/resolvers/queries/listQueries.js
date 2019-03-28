@@ -26,9 +26,9 @@ const getLists = async (parent, args, context, info) => {
  * @param {*} info
  * @returns { List }
  */
-const getListById = async (parent, { id }, context, info) => {
+const getListById = async (parent, { id }, { req }, info) => {
   try {
-    // TODO: Pass the userId by the authentication
+    let { uid } = req.session
     return await ListModel.findById(mongoose.Types.ObjectId(id))
   } catch (error) {
     throw new ApolloError(`Error getting list.`, '404')
@@ -44,10 +44,11 @@ const getListById = async (parent, { id }, context, info) => {
  * @param {*} info
  * @returns {[ Lists ]}
  */
-const getListsByTitle = async (parent, { title }, context, info) => {
+const getListsByTitle = async (parent, { title }, { req }, info) => {
   try {
+    let { uid } = req.session
     let userId = mongoose.Types.ObjectId(uid)
-    return await ListModel.find({ title: { $regex: title, $options: 'gi' }, createdBy: userId })
+    return await ListModel.where({ title: { $regex: title, $options: 'gi' }, createdBy: userId }).or({ title: { $regex: title, $options: 'gi' }, sharedWith: userId })
   } catch (error) {
     throw new ApolloError(`Error getting lists: ${error.message}`, '400')
   }

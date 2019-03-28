@@ -35,15 +35,15 @@ const gqlServer = new ApolloServer({
 })
 
 const RedisStore = ConnectRedis(session)
-const store = new RedisStore({
-  host: REDIS_HOST,
-  port: REDIS_PORT,
-  pass: REDIS_PASSWORD
-})
+// const store = new RedisStore({
+//   host: REDIS_HOST,
+//   port: REDIS_PORT,
+//   pass: REDIS_PASSWORD
+// })
 
 app.use(cors())
 app.use(session({
-  store,
+  // store,
   name: SESS_NAME,
   secret: SESS_SECRET,
   resave: false,

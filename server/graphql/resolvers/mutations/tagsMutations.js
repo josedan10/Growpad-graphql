@@ -1,5 +1,6 @@
 const { ApolloError } = require('apollo-server-express')
 const mongoose = require('mongoose')
+const { ObjectId } = mongoose.Types
 
 // Models
 const TagModel = require('../../../models/Tag')
@@ -22,27 +23,18 @@ let uid = '5c8b23ac145b1136f4b6b244'
 const addUserToTag = async (parent, { name }, context, info) => {
   name = name.toLowerCase()
   try {
-    let existsTag = await TagModel.findOne({ name })
-    let tag
-    let userId = mongoose.Types.ObjectId(uid)
-
-    // No duplicate users
-    if (existsTag) {
-      tag = await TagModel.findOneAndUpdate(
-        {
-          name
-        },
-        {
-          $addToSet: { users: userId }
-        }
-      )
-    } else {
-      tag = new TagModel({
-        name,
-        users: [userId]
-      })
-      await tag.save()
-    }
+    let userId = ObjectId(uid)
+    await TagModel.findOneAndUpdate(
+      {
+        name
+      },
+      {
+        $addToSet: { users: userId }
+      },
+      {
+        upsert: true
+      }
+    )
 
     return {
       msg: `User added to tag '${name}'.`,
@@ -69,7 +61,7 @@ const addUserToTag = async (parent, { name }, context, info) => {
  */
 const removeUserFromTag = async (parent, { name }, context, info) => {
   try {
-    let userId = mongoose.Types.ObjectId(uid)
+    let userId = ObjectId(uid)
     let tag = await TagModel.findOneAndUpdate({ name: name },
       {
         $pull: {
@@ -80,12 +72,12 @@ const removeUserFromTag = async (parent, { name }, context, info) => {
 
     await UserModel.findOneAndUpdate(
       {
-        _id: mongoose.Types.ObjectId(userId),
-        'lists.tags': mongoose.Types.ObjectId(tag._id)
+        _id: ObjectId(userId),
+        'lists.tags': ObjectId(tag._id)
       },
       {
         $pull: {
-          'lists.$.tags': mongoose.Types.ObjectId(tag._id)
+          'lists.$.tags': ObjectId(tag._id)
         }
       }
     )
@@ -114,10 +106,10 @@ const removeUserFromTag = async (parent, { name }, context, info) => {
  */
 const removeTagsFromList = async (parent, { id, tagIds }, { req }, info) => {
   try {
-    let { uid } = req
-    let userId = mongoose.Types.ObjectId(uid)
-    tagIds = tagIds.map((id) => mongoose.Types.ObjectId(id))
-    await ListModel.updateOne({ _id: mongoose.Types.ObjectId(id) },
+    let { uid } = req.session
+    let userId = ObjectId(uid)
+    tagIds = tagIds.map((id) => ObjectId(id))
+    await ListModel.updateOne({ _id: ObjectId(id) },
       {
         $pull: {
           tags: { $in: tagIds }
@@ -158,9 +150,9 @@ const removeTagsFromList = async (parent, { id, tagIds }, { req }, info) => {
  */
 const addTagsToList = async (parent, { tagIds, id }, { req }, info) => {
   try {
-    let { uid } = req
-    let userId = mongoose.Types.ObjectId(uid)
-    tagIds = tagIds.map((id) => mongoose.Types.ObjectId(id))
+    let { uid } = req.session
+    let userId = ObjectId(uid)
+    tagIds = tagIds.map((id) => ObjectId(id))
     await TagModel.updateMany({ _id: tagIds },
       {
         $addToSet: {
@@ -169,7 +161,7 @@ const addTagsToList = async (parent, { tagIds, id }, { req }, info) => {
       }
     )
 
-    await ListModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) },
+    await ListModel.findOneAndUpdate({ _id: ObjectId(id) },
       {
         $addToSet: { tags: { $each: tagIds } }
       }
@@ -198,32 +190,33 @@ const addTagsToList = async (parent, { tagIds, id }, { req }, info) => {
  * @param {*} info
  * @returns { Response }
  */
-const removeTagsFromNote = async (parent, { tagIds, id }, { req }, info) => {
+const removeTagsFromNote = async (parent, { tags, id }, { req }, info) => {
   try {
-    let { uid } = req
-    let userId = mongoose.Types.ObjectId(uid)
-    tagIds = tagIds.map((id) => mongoose.Types.ObjectId(id))
-    await NoteModel.updateOne({ _id: mongoose.Types.ObjectId(id) },
+    // let { uid } = req.session
+    // let userId = ObjectId(uid)
+    let tagIds = await Promise.all(
+      tags.map(async (name) => {
+        name = name.toLowerCase()
+        let tag = await TagModel.findOne(
+          { name },
+          { name: 1 }
+        )
+
+        if (!tag) throw new ApolloError(`Tag doesn't exists.`, 404)
+        return ObjectId(tag._id)
+      })
+    )
+    // TODO: attempt remove tag from user
+    return NoteModel.findOneAndUpdate({ _id: ObjectId(id) },
       {
         $pull: {
           tags: { $in: tagIds }
         }
-      }
-    )
-
-    await TagModel.updateMany({ _id: tagIds },
+      },
       {
-        $pull: {
-          users: userId
-        }
+        new: true
       }
     )
-
-    return {
-      msg: `Tag successfully removed from note`,
-      status: 200,
-      errors: []
-    }
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error removing tag from Note: ${error.message}`, '400')
@@ -242,30 +235,35 @@ const removeTagsFromNote = async (parent, { tagIds, id }, { req }, info) => {
  * @param {*} info
  * @return { Response }
  */
-const addTagsToNote = async (parent, { tagIds, id }, { req }, info) => {
+const addTagsToNote = async (parent, { tags, id }, { req }, info) => {
   try {
-    let { uid } = req
-    let userId = mongoose.Types.ObjectId(uid)
-    tagIds = tagIds.map((id) => mongoose.Types.ObjectId(id))
-    await TagModel.updateMany({ _id: tagIds },
-      {
-        $addToSet: {
-          users: userId
-        }
-      }
+    let { uid } = req.session
+    let userId = ObjectId(uid)
+
+    let tagIds = await Promise.all(
+      tags.map(async (name) => {
+        name = name.toLowerCase()
+        let tag = await TagModel.findOneAndUpdate(
+          { name },
+          {
+            $set: { name },
+            $addToSet: {
+              users: userId
+            }
+          },
+          { upsert: true, new: true }
+        )
+
+        return ObjectId(tag._id)
+      })
     )
 
-    await NoteModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) },
+    return NoteModel.findByIdAndUpdate(ObjectId(id),
       {
         $addToSet: { tags: { $each: tagIds } }
-      }
+      },
+      { new: true }
     )
-
-    return {
-      msg: `Added tags to note.`,
-      status: 200,
-      errors: []
-    }
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error adding tags to note: ${error.message}`)

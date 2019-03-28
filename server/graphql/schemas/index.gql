@@ -1,6 +1,7 @@
 directive @auth on FIELD_DEFINITION
 directive @guest on FIELD_DEFINITION
 directive @admin on FIELD_DEFINITION
+directive @lowercase on ARGUMENT_DEFINITION | FIELD_DEFINITION
 
 
 type Error {

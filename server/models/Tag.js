@@ -6,7 +6,8 @@ const tagSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'The tagname is required.'],
-    unique: [true, 'This tagname already exists.']
+    unique: [true, 'This tagname already exists.'],
+    index: true
   },
   users: [
     {

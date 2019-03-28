@@ -1,0 +1,19 @@
+enum MovementType {
+  deposit
+  withdrawal
+}
+
+type Movement {
+  _id: ID!
+  type: MovementType!
+  amount: Float!
+  date: String!
+}
+
+type Wallet {
+  _id: ID!
+  name: String!
+  description: String
+  balance: Float
+  movements: [Movement]
+}

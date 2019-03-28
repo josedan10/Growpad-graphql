@@ -7,9 +7,8 @@ const NoteModel = require('../../../models/Note')
 const UserModel = require('../../../models/User')
 const TagModel = require('../../../models/Tag')
 
-let uid = '5c8b23ac145b1136f4b6b244'
-
-const createNote = async (parent, { title = moment().format('ddd MMM Do, YYYY. HH:mm:ss'), content }, context, info) => {
+const createNote = async (parent, { title = moment().format('ddd MMM Do, YYYY. HH:mm:ss'), content }, { req }, info) => {
+  let { uid } = req.session
   let userId = mongoose.Types.ObjectId(uid)
 
   try {
@@ -38,7 +37,6 @@ const createNote = async (parent, { title = moment().format('ddd MMM Do, YYYY. H
 
 const modifyNote = async (parent, { id, content, title }, context, info) => {
   try {
-    let userId = mongoose.Types.ObjectId(uid)
     await NoteModel.updateOne(
       { _id: mongoose.Types.ObjectId(id) },
       {

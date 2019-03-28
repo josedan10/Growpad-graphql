@@ -81,7 +81,6 @@ const userSchema = new mongoose.Schema({
   }],
   lists: [{
     type: mongoose.Schema.Types.ObjectId,
-    index: { unique: true, dropDups: true },
     ref: 'List'
   }],
   wallets: [{
@@ -90,7 +89,6 @@ const userSchema = new mongoose.Schema({
   }],
   interests: [{
     type: mongoose.Schema.Types.ObjectId,
-    index: { unique: true, dropDups: true },
     ref: 'Interest'
   }]
 }, schemaOptions)

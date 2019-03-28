@@ -15,7 +15,7 @@ extend type Mutation {
 
   addTagsToList (
     id: ID!
-    tagIds: [ID!]!
+    tags: [String!]!
   ): Response @auth
 
   removeTagsFromList (
@@ -25,11 +25,11 @@ extend type Mutation {
 
   addTagsToNote (
     id: ID!
-    tagIds: [ID!]!
-  ): Response @auth
+    tags: [String!]!
+  ): Note @auth @lowercase
 
   removeTagsFromNote (
     id: ID!
-    tagIds: [ID!]!
-  ): Response @auth
+    tags: [String!]!
+  ): Note @auth @lowercase
 }
