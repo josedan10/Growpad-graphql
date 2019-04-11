@@ -2,10 +2,5 @@
   "plugins": [
     "import-graphql"
   ],
-  "presets": ["next/babel"], 
-  "env": { 
-    "test": { 
-      "presets": [ "env", "next/babel" ] 
-    } 
-  }
+  "presets": ["@babel/preset-env", "@babel/preset-react"] 
 }
