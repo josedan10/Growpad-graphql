@@ -1,7 +1,9 @@
 import React from 'react'
 
-export default () => (
+const Home = () => (
   <div>
     Home, from react Router
   </div>
 )
+
+export default Home

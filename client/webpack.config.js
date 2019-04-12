@@ -1,11 +1,28 @@
-const HtmlWebPackPlugin = require('html-webpack-plugin')
 const path = require('path')
+// const fs = require('fs')
+
+// Plugins
+const HtmlWebPackPlugin = require('html-webpack-plugin')
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// const CompressionPlugin = require('compression-webpack-plugin')
+
+// helpers
+// const pagesDir = () => fs.readdirSync(path.join(__dirname, '/src/pages'))
+// const objectPages = () => {
+//   let pages = {}
+//   pagesDir().forEach(file => { pages[file] = path.join(__dirname, '/src/pages', file) })
+//   return pages
+// }
 
 module.exports = (env, argv) => ({
-  entry: './src/index.js',
+  entry: {
+    index: './src/index.js'
+  },
   output: {
     path: path.join(__dirname, '/dist'),
     filename: 'bundle.js'
+    // chunkFilename: '[name].bundle.js'
   },
   mode: argv.mode,
   module: {
@@ -17,7 +34,7 @@ module.exports = (env, argv) => ({
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: argv.mode === 'development',
+              sourceMap: argv.mode === 'development'
             }
           }
         ]
@@ -44,15 +61,19 @@ module.exports = (env, argv) => ({
   },
   plugins: [
     new HtmlWebPackPlugin({
-      template: path.join(__dirname, '/src/index.html'),
-      minify: argv.mode === 'production'
-      // filename: path.join(__dirname, '/dist/index.html')
+      template: path.join(__dirname, '/public', 'index.html'),
+      minify: argv.mode === 'production',
+      inject: 'body',
+      filename: './index.html'
     })
   ],
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     watchContentBase: true,
     compress: true,
+    historyApiFallback: true,
     port: 8000
-  }
+    // https: true
+  },
+  devtool: 'eval-source-map'
 })

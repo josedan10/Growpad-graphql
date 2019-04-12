@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "client": "cd client && npm run start",
+    "client": "cd client && npm run dev",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,11 +12,29 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "eslint": "^5.15.1",
+    "prop-types": "^15.7.2",
     "standard": "^12.0.1"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.7.1",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^1.3.1",
+    "jest": "^24.7.1",
+    "lint-staged": "^8.1.5",
     "node-sass": "^4.11.0",
+    "prettier": "^1.16.4",
+    "pretty-quick": "^1.10.0",
+    "react-test-renderer": "^16.8.6",
     "sass-loader": "^7.1.0"
   }
 }
