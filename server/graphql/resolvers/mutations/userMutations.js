@@ -42,8 +42,9 @@ const signUp = async (parent, { input }, { req }, info) => {
     req.session.uid = user.id
     return user
   } catch (error) {
-    console.log(error)
-    throw new ApolloError(`Error creating user '${input.username}'.`, '400')
+    // let errors = Object.keys(error.errors).map((key) => new ApolloError(error.errors[key], 'SIGN_UP_ERROR'))
+    throw new ApolloError('SignUp error', '500', { errors: error.errors })
+    // throw errors
   }
 }
 
@@ -58,7 +59,7 @@ const login = async (parent, args, { req }, info) => {
     return user
   } catch (error) {
     console.log(error)
-    throw new ApolloError(`Error while login the user: ${error.message}`)
+    throw new ApolloError(`Error while login the user: ${error.message}`, 500, error.errors)
   }
 }
 

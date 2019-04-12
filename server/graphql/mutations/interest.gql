@@ -1,9 +1,9 @@
 extend type Mutation {
   addUserToInterest (
     name: String!
-  ): Interest @auth
+  ): User @auth
 
   removeUserFromInterest (
     id: ID!
-  ): Response @auth
+  ): User @auth
 }

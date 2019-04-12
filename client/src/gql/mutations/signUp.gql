@@ -1,0 +1,10 @@
+# Inputs' user mutations
+mutation signUpMutation($input : InputSignUp!) {
+  signUp(input: $input) {
+    _id,
+    username,
+    firstName,
+    lastName,
+    email
+  }
+}

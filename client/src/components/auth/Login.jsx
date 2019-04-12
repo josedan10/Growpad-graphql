@@ -10,7 +10,6 @@ export default class LoginForm extends Component {
     }
 
     this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleChange ({ target }) {

@@ -31,6 +31,15 @@ const gqlServer = new ApolloServer({
   context: ({ req, res }) => ({ req, res }),
   playground: IN_PROD ? (false) : {
     'request.credentials': 'include'
+  },
+  formatError: (err) => {
+    console.log(err)
+    const { message, extensions } = err
+    return {
+      message,
+      code: extensions.code,
+      errors: extensions.exception.errors
+    }
   }
 })
 

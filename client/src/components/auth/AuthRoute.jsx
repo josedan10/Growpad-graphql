@@ -3,6 +3,10 @@ import { connect } from 'react-redux'
 import React from 'react'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
+import PropTypes from 'prop-types'
+
+// Errors
+import { NOT_AUTHENTICATED_ERROR } from '../../errors'
 
 const GET_PROFILE = gql`
   {
@@ -19,30 +23,42 @@ const AuthRoute = ({ component: Component, ...rest }) => {
       {({ loading, error, data }) => {
         if (loading) return 'Loading...'
         if (error) {
-          console.log(error)
-          return `Error! ${error.message}`
+          switch (error.message) {
+            case NOT_AUTHENTICATED_ERROR:
+              // redirect
+              return (
+                <Route
+                  {...rest}
+                  render={props => <Redirect
+                    to={{
+                      pathname: '/login',
+                      state: { from: props.location }
+                    }}
+                  />}
+                />
+              )
+
+            default:
+              console.log(NOT_AUTHENTICATED_ERROR)
+              console.log(error.message)
+              return `Error! ${error.message}`
+          }
         }
 
         return (
           <Route
             {...rest}
-            render={props =>
-              error.user.isAuthenticated ? (
-                <Component {...props} user={data} />
-              ) : (
-                <Redirect
-                  to={{
-                    pathname: '/login',
-                    state: { from: props.location }
-                  }}
-                />
-              )
-            }
+            render={props => <Component {...props} user={data} />}
           />
         )
       }}
     </Query>
   )
+}
+
+AuthRoute.propTypes = {
+  component: PropTypes.func,
+  location: PropTypes.object
 }
 
 export default connect()(AuthRoute)

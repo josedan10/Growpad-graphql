@@ -3,18 +3,6 @@ directive @guest on FIELD_DEFINITION
 directive @admin on FIELD_DEFINITION
 directive @lowercase on ARGUMENT_DEFINITION | FIELD_DEFINITION
 
-
-type Error {
-  errorCode: String!,
-  errorMsg: String!
-}
-
-type Response {
-  status: Int!,
-  msg: String!,
-  errors: [Error]
-}
-
 type Query {
   _: String
 }

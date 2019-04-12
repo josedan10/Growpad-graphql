@@ -9,20 +9,33 @@ const resolvers = require('./resolvers')
 
 // We need read all queries, mutations and schemas definitions
 
+// Debug resolve
+
+// 1) Read schemas
+// const schemasDir = fs.readdirSync(path.resolve('./server/graphql/schemas/'))
+
+// 2) Read queries
+// const queriesDir = fs.readdirSync(path.resolve('./server/graphql/queries/'))
+
+// 3) Read mutations
+// const mutationsDir = fs.readdirSync(path.resolve('./server/graphql/mutations/'))
+
+// let schemas = schemasDir.map(fileName => fs.readFileSync(path.resolve(`./server/graphql/schemas/${fileName}`), 'utf8'))
+// let queries = queriesDir.map(fileName => fs.readFileSync(path.resolve(`./server/graphql/queries/${fileName}`), 'utf8'))
+// let mutations = mutationsDir.map(fileName => fs.readFileSync(path.resolve(`./server/graphql/mutations/${fileName}`), 'utf8'))
+
 // 1) Read schemas
 const schemasDir = fs.readdirSync(path.resolve('./graphql/schemas/'))
 
-// 2) Read queries
+// // 2) Read queries
 const queriesDir = fs.readdirSync(path.resolve('./graphql/queries/'))
 
-// 3) Read mutations
+// // 3) Read mutations
 const mutationsDir = fs.readdirSync(path.resolve('./graphql/mutations/'))
 
 let schemas = schemasDir.map(fileName => fs.readFileSync(path.resolve(`./graphql/schemas/${fileName}`), 'utf8'))
 let queries = queriesDir.map(fileName => fs.readFileSync(path.resolve(`./graphql/queries/${fileName}`), 'utf8'))
 let mutations = mutationsDir.map(fileName => fs.readFileSync(path.resolve(`./graphql/mutations/${fileName}`), 'utf8'))
-
-// TODO: merge resolvers
 
 const fileSchema = makeExecutableSchema({
   typeDefs: [...schemas, ...queries, ...mutations],

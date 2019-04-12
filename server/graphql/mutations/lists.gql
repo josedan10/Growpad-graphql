@@ -8,7 +8,7 @@ extend type Mutation {
 
   deleteList (
     id: ID!
-  ): Response @auth
+  ): List @auth
 
   modifyList (
     id: ID!

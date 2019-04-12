@@ -36,11 +36,7 @@ const addUserToTag = async (parent, { name }, context, info) => {
       }
     )
 
-    return {
-      msg: `User added to tag '${name}'.`,
-      status: 200,
-      errors: []
-    }
+    return UserModel.findById(userId)
   } catch (error) {
     throw new ApolloError(`Error creating tag '${name}': ${error.message}`, '400')
   }
@@ -70,7 +66,7 @@ const removeUserFromTag = async (parent, { name }, context, info) => {
       }
     )
 
-    await UserModel.findOneAndUpdate(
+    return UserModel.findOneAndUpdate(
       {
         _id: ObjectId(userId),
         'lists.tags': ObjectId(tag._id)
@@ -79,14 +75,11 @@ const removeUserFromTag = async (parent, { name }, context, info) => {
         $pull: {
           'lists.$.tags': ObjectId(tag._id)
         }
+      },
+      {
+        new: true
       }
     )
-
-    return {
-      msg: 'User removed from tag successfully.',
-      status: 200,
-      errors: []
-    }
   } catch (error) {
     throw new ApolloError(`Error removing user from '${name}' tag: ${error.message}`, '400')
   }
@@ -109,13 +102,6 @@ const removeTagsFromList = async (parent, { id, tagIds }, { req }, info) => {
     let { uid } = req.session
     let userId = ObjectId(uid)
     tagIds = tagIds.map((id) => ObjectId(id))
-    await ListModel.updateOne({ _id: ObjectId(id) },
-      {
-        $pull: {
-          tags: { $in: tagIds }
-        }
-      }
-    )
 
     await TagModel.updateMany({ _id: tagIds },
       {
@@ -125,11 +111,16 @@ const removeTagsFromList = async (parent, { id, tagIds }, { req }, info) => {
       }
     )
 
-    return {
-      msg: `Tag successfully removed from list`,
-      status: 200,
-      errors: []
-    }
+    return await ListModel.updateOne({ _id: ObjectId(id) },
+      {
+        $pull: {
+          tags: { $in: tagIds }
+        }
+      },
+      {
+        new: true
+      }
+    )
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error removing tag from list: ${error.message}`, '400')
@@ -161,17 +152,14 @@ const addTagsToList = async (parent, { tagIds, id }, { req }, info) => {
       }
     )
 
-    await ListModel.findOneAndUpdate({ _id: ObjectId(id) },
+    return ListModel.findOneAndUpdate({ _id: ObjectId(id) },
       {
         $addToSet: { tags: { $each: tagIds } }
+      },
+      {
+        new: true
       }
     )
-
-    return {
-      msg: `Added tags to list.`,
-      status: 200,
-      errors: []
-    }
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error adding tags to list: ${error.message}`)
@@ -212,9 +200,6 @@ const removeTagsFromNote = async (parent, { tags, id }, { req }, info) => {
         $pull: {
           tags: { $in: tagIds }
         }
-      },
-      {
-        new: true
       }
     )
   } catch (error) {

@@ -6,22 +6,22 @@
 extend type Mutation {
   addUserToTag (
     name: String!
-  ): Response @auth
+  ): User @auth
 
   removeUserFromTag (
     name: String!
     userId: ID!
-  ): Response @auth
+  ): User @auth
 
   addTagsToList (
     id: ID!
     tags: [String!]!
-  ): Response @auth
+  ): List @auth
 
   removeTagsFromList (
     id: ID!
     tagIds: [ID!]!
-  ): Response @auth
+  ): List @auth
 
   addTagsToNote (
     id: ID!

@@ -32,11 +32,6 @@ const createList = async (parent, { title }, { req }, info) => {
     ).exec()
 
     return list
-    // return {
-    //   msg: `List '${title}' successfully created.`,
-    //   status: 200,
-    //   errors: []
-    // }
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error creating '${title}' list`, '400')
@@ -57,7 +52,7 @@ const deleteList = async (parent, { id }, { req }, info) => {
   try {
     let { uid } = req.session
     let userId = ObjectId(uid)
-    await ListModel.findOneAndDelete(
+    let list = await ListModel.findOneAndDelete(
       {
         _id: ObjectId(id),
         createdBy: userId
@@ -73,11 +68,7 @@ const deleteList = async (parent, { id }, { req }, info) => {
       }
     )
 
-    return {
-      msg: `List deleted successfully.`,
-      status: 200,
-      errors: []
-    }
+    return list
   } catch (error) {
     console.log(error)
     throw new ApolloError(
@@ -187,7 +178,8 @@ const stopShareListWithUsers = async (parent, { id, users }, { req }, info) => {
         $pull: {
           sharedWith: { $each: userIds }
         }
-      }
+      },
+      { new: true }
     )
   } catch (error) {
     console.log(error)
