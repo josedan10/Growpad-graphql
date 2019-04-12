@@ -19,6 +19,8 @@ const {
   IN_PROD
 } = require('./config')
 
+const { formatError } = require('./errors')
+
 require('./db')
 
 const app = express()
@@ -32,15 +34,7 @@ const gqlServer = new ApolloServer({
   playground: IN_PROD ? (false) : {
     'request.credentials': 'include'
   },
-  formatError: (err) => {
-    console.log(err)
-    const { message, extensions } = err
-    return {
-      message,
-      code: extensions.code,
-      errors: extensions.exception.errors
-    }
-  }
+  formatError
 })
 
 const RedisStore = ConnectRedis(session)

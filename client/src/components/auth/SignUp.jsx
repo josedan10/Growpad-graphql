@@ -29,8 +29,10 @@ export default class SignUpForm extends Component {
     }))
   }
 
-  handleSubmit (callbackMutation) {
-    callbackMutation({ variables: { input: this.state } })
+  handleSubmit (mutation) {
+    mutation({ variables: { input: this.state } })
+      .then(this.props.history.push('/dashboard'))
+      .catch(error => console.error(error.graphQLErrors))
   }
 
   render () {
@@ -39,8 +41,18 @@ export default class SignUpForm extends Component {
         { (signUp, { data, loading, error }) => (
           <div>
             { loading && <span>Enviando...</span> }
-            { error && console.log(error.graphQLErrors[0].extensions.exception.errors) }
-            {/* { data && console.log(data) } */}
+            { (error && error.networkError) ? <span>Error Network: { error.networkError.message }</span> : 
+                (error && error.graphQLErrors[0]) ? (
+                  <div className='errors'>
+                    <span>{error.graphQLErrors[0].message}</span>
+                    <ul>
+                      {error.graphQLErrors[0].errors.map(err => (
+                        <li>{ err.message }</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : ''
+            }
             <form onSubmit={e => {
               e.preventDefault()
               this.handleSubmit(signUp)

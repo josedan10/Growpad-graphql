@@ -6,7 +6,7 @@ import gql from 'graphql-tag'
 import PropTypes from 'prop-types'
 
 // Errors
-import { NOT_AUTHENTICATED_ERROR } from '../../errors'
+import { UNAUTHENTICATED } from '../../errors'
 
 const GET_PROFILE = gql`
   {
@@ -23,8 +23,8 @@ const AuthRoute = ({ component: Component, ...rest }) => {
       {({ loading, error, data }) => {
         if (loading) return 'Loading...'
         if (error) {
-          switch (error.message) {
-            case NOT_AUTHENTICATED_ERROR:
+          switch (error.graphQLErrors[0].code) {
+            case UNAUTHENTICATED:
               // redirect
               return (
                 <Route
@@ -39,7 +39,6 @@ const AuthRoute = ({ component: Component, ...rest }) => {
               )
 
             default:
-              console.log(NOT_AUTHENTICATED_ERROR)
               console.log(error.message)
               return `Error! ${error.message}`
           }

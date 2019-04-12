@@ -1,8 +1,3 @@
-enum Sex {
-  M
-  F
-}
-
 enum UserType {
   premium
   admin
@@ -16,7 +11,7 @@ type User {
   firstName: String!
   lastName: String!
   birthDate: String!
-  sex: Sex!
+  sex: String!
   notes: [Note]
   lists: [List]
   type: UserType!
