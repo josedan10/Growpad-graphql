@@ -53,6 +53,20 @@ module.exports = (env, argv) => ({
             loader: 'html-loader'
           }
         ]
+      },
+      {
+        test: /\.(graphql|gql)$/,
+        use: [
+          {
+            loader: 'graphql-tag/loader',
+            options: {
+              // validate: true,
+              // schema: "./path/to/schema.json",
+              // removeUnusedFragments: true
+              // etc. See "Loader Options" below
+            }
+          }
+        ]
       }
     ]
   },
@@ -67,12 +81,13 @@ module.exports = (env, argv) => ({
       filename: './index.html'
     })
   ],
+  watch: true,
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
-    watchContentBase: true,
+    open: true,
     compress: true,
-    historyApiFallback: true,
-    port: 8000
+    historyApiFallback: true
+    // port: 8000
     // https: true
   },
   devtool: 'eval-source-map'

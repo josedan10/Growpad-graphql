@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "client": "cd ../client && npm run start",
-    "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "nodemon index.js",
     "graphql": "nodemon ./graphql/index.js",
+    "prod": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "nodemon index.js",
+    "debug": "nodemon --inspect-brk=8000 server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
