@@ -12,6 +12,9 @@ module.exports = {
   DB_PASSWORD: process.env.DB_PASSWORD || 'growpad123',
   DB_PORT: process.env.DB_PORT || 27017,
   DB_HOST: process.env.DB_HOST || 'localhost',
+  // Token
+  TOKEN_SECRET: process.env.TOKEN_SECRET || 'secret',
+  TOKEN_LIFETIME: process.env.TOKEN_LIFETIME || '1h',
   // Bcrypt
   HASH_SALT_AROUNDS: process.env.HASH_SALT_AROUNDS || 10,
   // Session

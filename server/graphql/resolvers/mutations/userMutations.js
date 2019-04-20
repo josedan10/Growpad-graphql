@@ -1,7 +1,14 @@
 const { ApolloError } = require('apollo-server-express')
 const mongoose = require('mongoose')
 const Joi = require('joi')
+const jwt = require('jsonwebtoken')
 const AuthMiddleware = require('../../../middlewares/auth')
+
+// config
+const {
+  TOKEN_SECRET,
+  TOKEN_LIFETIME
+} = require('../../config.js')
 
 // Validators
 const { loginValidator } = require('../../../functions/modelValidators')
@@ -39,7 +46,14 @@ const UserModel = require('../../../models/User')
 const signUp = async (parent, { input }, { req }, info) => {
   try {
     let user = await UserModel.create(input)
-    req.session.uid = user.id
+
+    // Create token
+    const payload = { user.username };
+    const token = jwt.sign(payload, TOKEN_SECRET, {
+      expiresIn: TOKEN_LIFETIME
+    });
+    res.cookie('token', token, { httpOnly: true })
+      .sendStatus(200);
     return user
   } catch (error) {
     let errors = []
@@ -62,7 +76,7 @@ const login = async (parent, args, { req }, info) => {
     return user
   } catch (error) {
     console.log(error)
-    throw new ApolloError(`Error while login the user: ${error.message}`, 500, error.errors)
+    throw new ApolloError(`Error while login the user: ${error.message}`, 500, { errors: error.errors || error.details })
   }
 }
 

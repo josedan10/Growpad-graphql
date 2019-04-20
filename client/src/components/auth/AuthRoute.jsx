@@ -22,10 +22,10 @@ const AuthRoute = ({ component: Component, ...rest }) => {
     <Query query={GET_PROFILE}>
       {({ loading, error, data }) => {
         if (loading) return 'Loading...'
+        console.log(data)
         if (error) {
           switch (error.graphQLErrors[0].code) {
             case UNAUTHENTICATED:
-              // redirect
               return (
                 <Route
                   {...rest}

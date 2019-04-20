@@ -28,11 +28,17 @@ module.exports = (env, argv) => ({
   module: {
     rules: [
       {
-        test: /\.sass$/,
+        test: /\.scss$/,
         exclude: /node_modules/,
         use: [
           {
-            loader: 'sass-loader',
+            loader: 'style-loader' // creates style nodes from JS strings
+          },
+          {
+            loader: 'css-loader' // translates CSS into CommonJS
+          },
+          {
+            loader: 'sass-loader', // compiles Sass to CSS
             options: {
               sourceMap: argv.mode === 'development'
             }
