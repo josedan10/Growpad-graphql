@@ -44,7 +44,12 @@ const store = new RedisStore({
   pass: REDIS_PASSWORD
 })
 
-app.use(cors())
+const corsOptions = {
+  origin: 'http://localhost:8080',
+  credentials: true // <-- REQUIRED backend setting
+}
+
+app.use(cors(corsOptions))
 app.use(session({
   store,
   name: SESS_NAME,

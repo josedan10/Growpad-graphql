@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Mutation } from 'react-apollo'
 import LoginMutation from '../../gql/mutations/login.gql'
+import { withRouter } from 'react-router-dom'
 
-export default class LoginForm extends Component {
+class LoginForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -24,7 +25,8 @@ export default class LoginForm extends Component {
   handleSubmit (mutation) {
     let { username, password } = this.state
     mutation({ variables: { username, password } })
-      .then(this.props.history.push('/dashboard'))
+      .then(response => {})
+      // this.props.history.push('/dashboard')
       .catch(error => console.error(error.graphQLErrors))
   }
 
@@ -41,11 +43,11 @@ export default class LoginForm extends Component {
 
             <div className='input-group'>
               <label htmlFor='username'>Username</label>
-              <input type='text' name='username' id='username' />
+              <input type='text' name='username' id='username' onChange={this.handleChange} />
             </div>
             <div className='input-group'>
               <label htmlFor='password'>Password</label>
-              <input type='password' name='password' id='password' />
+              <input type='password' name='password' id='password' onChange={this.handleChange} />
             </div>
             <input type='submit' value='Login' />
           </form>
@@ -54,3 +56,5 @@ export default class LoginForm extends Component {
     )
   }
 }
+
+export default withRouter(LoginForm)
