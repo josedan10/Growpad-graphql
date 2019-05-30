@@ -54,6 +54,8 @@
     "animate.css": "^3.7.0",
     "aos": "^2.3.4",
     "apollo-boost": "^0.3.1",
+    "apollo-link": "^1.2.11",
+    "apollo-link-http": "^1.5.14",
     "axios": "^0.18.0",
     "graphql": "^14.2.1",
     "history": "^4.9.0",

@@ -14,3 +14,14 @@ type Mutation {
 type Subscription {
   _: String
 }
+
+type Error {
+  path: String!,
+  message: String!
+}
+
+type Response {
+  success: Boolean!,
+  token: String,
+  errors: [Error]!
+}

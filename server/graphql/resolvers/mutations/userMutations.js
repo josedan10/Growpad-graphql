@@ -8,7 +8,7 @@ const AuthMiddleware = require('../../../middlewares/auth')
 const {
   TOKEN_SECRET,
   TOKEN_LIFETIME
-} = require('../../config.js')
+} = require('../../../config.js')
 
 // Validators
 const { loginValidator } = require('../../../functions/modelValidators')
@@ -45,16 +45,12 @@ const UserModel = require('../../../models/User')
  */
 const signUp = async (parent, { input }, { req }, info) => {
   try {
-    let user = await UserModel.create(input)
+    await UserModel.create(input)
 
-    // Create token
-    const payload = { user.username };
-    const token = jwt.sign(payload, TOKEN_SECRET, {
-      expiresIn: TOKEN_LIFETIME
-    });
-    res.cookie('token', token, { httpOnly: true })
-      .sendStatus(200);
-    return user
+    return {
+      success: true,
+      errors: []
+    }
   } catch (error) {
     let errors = []
     for (let key in error.errors) {
@@ -65,14 +61,19 @@ const signUp = async (parent, { input }, { req }, info) => {
   }
 }
 
-const login = async (parent, args, { req }, info) => {
+const login = async (parent, args, { res }, info) => {
   try {
-    // console.log(req.session)
     await Joi.validate(args, loginValidator, { abortEarly: false })
 
     let user = await AuthMiddleware.attemptLogin(args)
-    req.session.uid = user.id
-    req.session.userType = user.type
+
+    const payload = { id: user.id }
+    const token = await jwt.sign(payload, TOKEN_SECRET, {
+      expiresIn: TOKEN_LIFETIME
+    })
+
+    res.header('Authorization', 'Bearer ' + token)
+
     return user
   } catch (error) {
     console.log(error)
@@ -81,12 +82,12 @@ const login = async (parent, args, { req }, info) => {
 }
 
 const logout = async (parent, args, { req, res }, info) => {
-  return AuthMiddleware.logout(req, res)
+  return AuthMiddleware.logout(res)
 }
 
 const changeUserType = async (parent, { id, type }, context, info) => {
   try {
-    return await UserModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId() },
+    return await UserModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) },
       {
         $set: { type }
       }

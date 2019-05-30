@@ -10,12 +10,12 @@ const schema = require('./graphql')
 const {
   SERVER_PORT,
   SERVER_HOST,
-  SESS_NAME,
-  SESS_SECRET,
-  SESS_LIFETIME,
-  REDIS_HOST,
-  REDIS_PASSWORD,
-  REDIS_PORT,
+  // SESS_NAME,
+  // SESS_SECRET,
+  // SESS_LIFETIME,
+  // REDIS_HOST,
+  // REDIS_PASSWORD,
+  // REDIS_PORT,
   IN_PROD
 } = require('./config')
 
@@ -37,26 +37,26 @@ const gqlServer = new ApolloServer({
   formatError
 })
 
-const RedisStore = ConnectRedis(session)
-const store = new RedisStore({
-  host: REDIS_HOST,
-  port: REDIS_PORT,
-  pass: REDIS_PASSWORD
-})
+// const RedisStore = ConnectRedis(session)
+// const store = new RedisStore({
+//   host: REDIS_HOST,
+//   port: REDIS_PORT,
+//   pass: REDIS_PASSWORD
+// })
 
 app.use(cors())
-app.use(session({
-  store,
-  name: SESS_NAME,
-  secret: SESS_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: SESS_LIFETIME,
-    sameSite: true,
-    secure: IN_PROD
-  }
-}))
+// app.use(session({
+//   store,
+//   name: SESS_NAME,
+//   secret: SESS_SECRET,
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {
+//     maxAge: SESS_LIFETIME,
+//     sameSite: true,
+//     secure: IN_PROD
+//   }
+// }))
 app.use(bodyParser.json())
 app.get('/', (req, res) => res.send('It\'s works'))
 
