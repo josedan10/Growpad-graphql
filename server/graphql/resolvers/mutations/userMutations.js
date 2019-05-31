@@ -74,7 +74,11 @@ const login = async (parent, args, { res }, info) => {
 
     res.header('Authorization', 'Bearer ' + token)
 
-    return user
+    return {
+      success: true,
+      token,
+      errors: []
+    }
   } catch (error) {
     console.log(error)
     throw new ApolloError(`Error while login the user: ${error.message}`, 500, { errors: error.errors || error.details })

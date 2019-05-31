@@ -15,6 +15,6 @@ extend type Mutation {
   signUp (input: InputSignUp): User @guest
   createUserAdmin (input: InputSignUp): User @auth @admin
   changeUserType (id: ID!, type: String!): User @auth @admin
-  login (username: String!, password: String!): User @guest
+  login (username: String!, password: String!): Response @guest
   logout: Boolean @auth
 }

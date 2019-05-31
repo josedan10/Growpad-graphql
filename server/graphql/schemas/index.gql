@@ -23,5 +23,5 @@ type Error {
 type Response {
   success: Boolean!,
   token: String,
-  errors: [Error]!
+  errors: [Error]
 }

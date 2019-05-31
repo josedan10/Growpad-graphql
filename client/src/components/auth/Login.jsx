@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { Mutation } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import LoginMutation from '../../gql/mutations/login.gql'
-import { withRouter } from 'react-router-dom'
+
+// actions
+import { authenticateUser } from '../../store/actions/auth'
 
 class LoginForm extends Component {
   constructor (props) {
@@ -26,8 +29,14 @@ class LoginForm extends Component {
   handleSubmit (mutation) {
     let { username, password } = this.state
     mutation({ variables: { username, password } })
-      .then(response => console.log(response))
-      .catch (error => console.error(error.message))
+      .then(response => {
+        let { success, token } = response.data.login
+        if (success) {
+          this.props.authenticateUser(token)
+          this.props.history.push('/dashboard')
+        }
+      })
+      .catch(error => console.error(error.message))
   }
 
   render () {
@@ -38,7 +47,7 @@ class LoginForm extends Component {
 
           let msgError
           if (error) {
-            if (error.graphQLErrors[0].errors) {
+            if (error.graphQLErrors[0] && error.graphQLErrors[0].errors) {
               msgError = (
                 <div>
                   <ul>
@@ -51,7 +60,7 @@ class LoginForm extends Component {
             } else {
               msgError = (
                 <div>
-                  <span className='alert-danger'>{ error.graphQLErrors[0].message }</span>
+                  <span className='alert-danger'>{ error.toString() }</span>
                 </div>
               )
             }
@@ -83,4 +92,15 @@ class LoginForm extends Component {
   }
 }
 
-export default withRouter(LoginForm)
+const mapStateToProps = (state, ownProps) => ({
+  
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  authenticateUser: (token) => { dispatch(authenticateUser(token)) }
+})
+
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginForm))

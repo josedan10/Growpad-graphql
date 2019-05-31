@@ -3,7 +3,7 @@ import { AUTHENTICATE_USER } from '../actions/auth'
 
 const initState = {
   authenticated: false,
-  user: null,
+  token: null,
   error: null
 }
 
@@ -13,7 +13,7 @@ const authReducer = (state = initState, action) => {
       return {
         ...state,
         authenticated: true,
-        user: action.user
+        token: action.token
       }
 
     default:
