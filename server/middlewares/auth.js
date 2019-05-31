@@ -1,13 +1,20 @@
 const { AuthenticationError } = require('apollo-server-express')
 const jwt = require('jsonwebtoken')
 
-const { SESS_NAME, TOKEN_SECRET } = require('../config')
+const { TOKEN_SECRET, TOKEN_LIFETIME } = require('../config')
 
 // Models
 const UserModel = require('../models/User')
 
-const isValidToken = token => jwt.verify(token, TOKEN_SECRET)
+const isValidToken = (token) => refreshToken(getPayload(token)) !== ''
+
 const isAdmin = user => user.userType === 'admin'
+
+const getPayload = token => {
+  let [, payload] = token.split(' ')
+
+  return payload
+}
 
 const attemptLogin = async ({ username, password }) => {
   let user = await UserModel.findOne({ username })
@@ -23,20 +30,21 @@ const attemptLogin = async ({ username, password }) => {
   return user
 }
 
-const checkLogin = ({ headers }) => {
+const isAuthenticated = ({ headers }) => {
   let token = headers.authorization
 
-  if (!token || !isValidToken(token)) {
+  if (!token) {
     throw new AuthenticationError(`You must be logged in.`, 401)
   }
-  return isValidToken(token)
+
+  return decodeToken(token)
 }
 
 const checkLogout = ({ headers }) => {
   const token = headers.authorization
 
-  if (token && isValidToken(token)) {
-    throw new AuthenticationError(`You are already logged in.`, 412)
+  if (token) {
+    throw new AuthenticationError(`You must be logged out.`, 412)
   }
 }
 
@@ -53,15 +61,43 @@ const checkAdminUser = (user) => {
 }
 
 const decodeToken = (token) => {
-  return jwt.decode(token)
+  let payload = getPayload(token)
+  payload = refreshToken(payload)
+  let { id } = jwt.decode(payload)
+  return id
+}
+
+const createToken = (id) => {
+  const payload = { id }
+  return jwt.sign(payload, TOKEN_SECRET, {
+    expiresIn: TOKEN_LIFETIME
+  })
+}
+
+const refreshToken = (payload) => {
+  try {
+    jwt.verify(payload, TOKEN_SECRET)
+  } catch (error) {
+    if (error.message === 'jwt expired') {
+      let { id } = jwt.decode(payload)
+      payload = createToken(id)
+    } else {
+      // invalid signature
+      payload = ''
+    }
+  }
+
+  return payload
 }
 
 module.exports = {
   attemptLogin,
   logout,
-  checkLogin,
+  isAuthenticated,
   checkLogout,
   checkAdminUser,
   isValidToken,
-  decodeToken
+  decodeToken,
+  createToken,
+  refreshToken
 }

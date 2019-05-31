@@ -19,7 +19,7 @@ const TagModel = require('../../../models/Tag')
  * @returns {[ Users ]}
  */
 const getUsers = async (parent, args, { req }, info) => {
-  AuthMiddleware.checkLogin(req)
+  AuthMiddleware.isAuthenticated(req)
 
   try {
     return UserModel.find({})
@@ -65,8 +65,8 @@ const getUserByUsername = async (parent, { username }, context, info) => {
   }
 }
 
-const profile = async (parent, args, { req }, info) => {
-  let userId = mongoose.Types.ObjectId(AuthMiddleware.checkLogin(req))
+const profile = async (parent, args, { uid }, info) => {
+  let userId = mongoose.Types.ObjectId(uid)
   try {
     return UserModel.findById(userId)
   } catch (error) {

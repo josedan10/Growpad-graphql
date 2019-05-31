@@ -8,7 +8,7 @@ const formatError = (error) => {
   let { extensions, message } = error
   let { errors, typeError, status } = extensions.exception
 
-  // console.log('Error handling',  errors)
+  // console.log('Error handling',  error)
 
   return {
     message,

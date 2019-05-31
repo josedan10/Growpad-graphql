@@ -12,7 +12,6 @@ export default class Loader extends Component {
   }
 
   componentWillMount () {
-    console.log('Cargando...')
     window.addEventListener('load', this.toggleLoad)
   }
 
@@ -20,8 +19,7 @@ export default class Loader extends Component {
     this.setState(prevState => ({
       ...prevState,
       loading: !prevState.loading
-    }),
-    () => console.log('Ready'))
+    }))
   }
   
   render () {

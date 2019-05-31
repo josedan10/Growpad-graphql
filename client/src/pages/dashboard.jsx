@@ -1,7 +1,11 @@
 import React from 'react'
+import Profile from '../components/user/dashboard/profile'
 
 const Dashboard = () => (
-  <div>Welcome</div>
+  <div>
+    <h1>Welcome</h1>
+    <Profile />
+  </div>
 )
 
 export default Dashboard

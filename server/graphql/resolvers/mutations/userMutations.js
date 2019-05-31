@@ -4,12 +4,6 @@ const Joi = require('joi')
 const jwt = require('jsonwebtoken')
 const AuthMiddleware = require('../../../middlewares/auth')
 
-// config
-const {
-  TOKEN_SECRET,
-  TOKEN_LIFETIME
-} = require('../../../config.js')
-
 // Validators
 const { loginValidator } = require('../../../functions/modelValidators')
 
@@ -67,10 +61,7 @@ const login = async (parent, args, { res }, info) => {
 
     let user = await AuthMiddleware.attemptLogin(args)
 
-    const payload = { id: user.id }
-    const token = await jwt.sign(payload, TOKEN_SECRET, {
-      expiresIn: TOKEN_LIFETIME
-    })
+    let token = AuthMiddleware.createToken(user._id)
 
     res.header('Authorization', 'Bearer ' + token)
 

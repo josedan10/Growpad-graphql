@@ -14,7 +14,7 @@ const getTags = async (parent, args, context, info) => {
 
 const getUserTags = async (parent, args, { req }, info) => {
   try {
-    let userId = AuthMiddleware.checkLogin(req)
+    let userId = AuthMiddleware.isAuthenticated(req)
     return TagModel.find({ users: userId }, { name: 1 })
   } catch (error) {
     console.log(error)

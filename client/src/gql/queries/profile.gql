@@ -1,0 +1,8 @@
+query profile {
+  profile {
+    username,
+    firstName,
+    lastName,
+    sex
+  }
+}

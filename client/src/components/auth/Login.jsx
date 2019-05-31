@@ -32,22 +32,21 @@ class LoginForm extends Component {
       .then(response => {
         let { success, token } = response.data.login
         if (success) {
-          this.props.authenticateUser(token)
+          localStorage.setItem('auth-token', token)
           this.props.history.push('/dashboard')
         }
       })
-      .catch(error => console.error(error.message))
+      .catch(error => console.error(error))
   }
 
   render () {
     return (
       <Mutation mutation={LoginMutation} errorPolicy='all'>
         { (login, { data, loading, error }) => {
-          data && console.log(data)
 
           let msgError
           if (error) {
-            if (error.graphQLErrors[0] && error.graphQLErrors[0].errors) {
+            if (error.graphQLErrors.length > 0 && error.graphQLErrors[0] && error.graphQLErrors[0].errors) {
               msgError = (
                 <div>
                   <ul>
@@ -58,6 +57,7 @@ class LoginForm extends Component {
                 </div>
               )
             } else {
+              console.log(error)
               msgError = (
                 <div>
                   <span className='alert-danger'>{ error.toString() }</span>
@@ -93,7 +93,7 @@ class LoginForm extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  
+  authenticated: state.authenticated
 })
 
 const mapDispatchToProps = (dispatch) => ({

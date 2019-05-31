@@ -22,29 +22,45 @@ import store from './store'
 import { ApolloProvider } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import { createHttpLink } from 'apollo-link-http'
-import { setContext } from 'apollo-link-context'
+import { HttpLink } from 'apollo-link-http'
+import { ApolloLink } from 'apollo-link'
 
 let history = createBrowserHistory()
 
-const httpLink = createHttpLink({
+const httpLink = new HttpLink({
   uri: 'http://localhost:4000/graphql'
 })
 
-const authLink = setContext((_, { headers }) => {
-  // get the authentication token from local storage if it exists
-  const token = localStorage.getItem('auth-token')
-  // return the headers to the context so httpLink can read them
-  return {
+const authMiddleware = new ApolloLink((operation, forward) => {
+  // add the authorization to the headers
+  let token = localStorage.getItem('auth-token')
+  operation.setContext({
     headers: {
-      ...headers,
       authorization: token ? `Bearer ${token}` : ''
     }
-  }
+  })
+
+  return forward(operation)
+})
+
+const authAfterware = new ApolloLink((operation, forward) => {
+  return forward(operation).map(response => {
+    const context = operation.getContext()
+    const { headers } = context
+
+    if (headers) {
+      const refreshToken = headers.authorization.split(' ')[1]
+      if (refreshToken) {
+        localStorage.setItem('auth-token', refreshToken)
+      }
+    }
+
+    return response
+  })
 })
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authAfterware.concat(authMiddleware.concat(httpLink)),
   cache: new InMemoryCache()
 })
 

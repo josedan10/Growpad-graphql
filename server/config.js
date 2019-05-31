@@ -14,7 +14,7 @@ module.exports = {
   DB_HOST: process.env.DB_HOST || 'localhost',
   // Token
   TOKEN_SECRET: process.env.TOKEN_SECRET || 'secret',
-  TOKEN_LIFETIME: process.env.TOKEN_LIFETIME || '1h',
+  TOKEN_LIFETIME: process.env.TOKEN_LIFETIME || '10s',
   // Bcrypt
   HASH_SALT_AROUNDS: process.env.HASH_SALT_AROUNDS || 10,
   // Session

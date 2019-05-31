@@ -25,3 +25,7 @@ type Response {
   token: String,
   errors: [Error]
 }
+
+extend type Query {
+  checkToken: Boolean!
+}
