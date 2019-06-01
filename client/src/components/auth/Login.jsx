@@ -32,7 +32,7 @@ class LoginForm extends Component {
       .then(response => {
         let { success, token } = response.data.login
         if (success) {
-          localStorage.setItem('auth-token', token)
+          this.props.authenticateUser(token)
           this.props.history.push('/dashboard')
         }
       })
@@ -93,7 +93,7 @@ class LoginForm extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  authenticated: state.authenticated
+  authenticated: state.auth.authenticated
 })
 
 const mapDispatchToProps = (dispatch) => ({

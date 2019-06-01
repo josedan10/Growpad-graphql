@@ -14,6 +14,7 @@ import SignUpPage from './pages/signUp'
 
 // AuthRoutes Component
 import AuthRoute from './components/auth/AuthRoute'
+import Logout from './components/auth/Logout'
 import Loader from './components/Loader'
 
 // Redux store
@@ -76,6 +77,7 @@ class App extends React.Component {
               <Route exact path='/login' component={LoginPage} />
               <Route exact path='/signUp' component={SignUpPage} />
               <AuthRoute exact path='/dashboard' component={Dashboard} />
+              <Route exact path='/logout' component={Logout} />
             </Switch>
           </Router>
         </Provider>

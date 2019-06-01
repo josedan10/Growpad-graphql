@@ -2,10 +2,10 @@ import React from 'react'
 import Profile from '../components/user/dashboard/profile'
 
 const Dashboard = () => (
-  <div>
-    <h1>Welcome</h1>
+  <main className='d-flex flex-center--column bg-light-gray'>
+    <h1>Dashboard</h1>
     <Profile />
-  </div>
+  </main>
 )
 
 export default Dashboard

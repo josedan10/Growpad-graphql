@@ -1,9 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Query } from 'react-apollo'
+import { ApolloConsumer } from 'react-apollo'
+import PropTypes from 'prop-types'
+
+// actions
+import { setUserProfile } from '../../../store/actions/user'
 
 // query
 import ProfileQuery from '../../../gql/queries/profile.gql'
+
+// default profile pictures
+import maleDefault from '../../../assets/male-default.svg'
+import femaleDefault from '../../../assets/female-default.svg'
 
 class Profile extends Component {
   constructor (props) {
@@ -14,21 +22,37 @@ class Profile extends Component {
   }
 
   render () {
+    let { profile, setUserProfile } = this.props
     return (
-      <Query query={ProfileQuery}>
-        {({ loading, error, data }) => {
-          if (loading) return 'Loading...'
-          if (error) return `Error! ${error.message}`
-
-          console.log(data)
-
-          return (
-            <h1>Hello {data.profile.username}!</h1>
-          )
-        }}
-      </Query>
+      <ApolloConsumer>
+        { client => {
+          if (profile) {
+            return (
+              <div className='profile-info'>
+                <h3 className='username'>{profile.username}</h3>
+                <img src={(profile.sex === 'M' ? maleDefault : femaleDefault)} />
+              </div>
+            )
+          } else {
+            client.query({
+              query: ProfileQuery
+            })
+              .then(response => setUserProfile(response.data.profile))
+              .catch(error => console.log(error))
+          }
+        }
+        }
+      </ApolloConsumer>
     )
   }
 }
 
-export default connect()(Profile)
+const mapToStateToProps = (state) => ({
+  profile: state.user.profile
+})
+
+const mapToDispatchToProps = (dispatch) => ({
+  setUserProfile: (profile) => { dispatch(setUserProfile(profile)) }
+})
+
+export default connect(mapToStateToProps, mapToDispatchToProps)(Profile)

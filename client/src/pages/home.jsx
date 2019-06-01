@@ -1,10 +1,14 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Home = () => (
-  <div>
-    Home, from react Router
-    <img src='https://cdn.vox-cdn.com/uploads/chorus_asset/file/14930422/The_Verge_S10_Wallpaper.0.png' />
-  </div>
+  <main className='d-flex flex-around--column'>
+    <h1>Welcome to growpad :)</h1>
+    <div className='auth-links d-flex flex-around'>
+      <Link to='/login' className='link-primary link-no-decoration'>Access to growpad</Link>
+      <Link to='/signup' className='link-primary link-no-decoration'>Create a growpad account</Link>
+    </div>
+  </main>
 )
 
 export default Home

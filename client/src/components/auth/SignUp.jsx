@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router'
 import { Mutation } from 'react-apollo'
 
 // Graphql mutation
 import signUpMutation from '../../gql/mutations/signUp.gql'
 
-export default class SignUpForm extends Component {
+class SignUpForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -31,6 +32,7 @@ export default class SignUpForm extends Component {
 
   handleSubmit (mutation) {
     mutation({ variables: { input: this.state } })
+      .then(this.props.history.push('/login'))
       .catch(error => console.error(error.graphQLErrors))
   }
 
@@ -98,3 +100,5 @@ export default class SignUpForm extends Component {
     )
   }
 }
+
+export default withRouter(SignUpForm)

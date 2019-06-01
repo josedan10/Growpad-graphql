@@ -1,0 +1,49 @@
+.btn {
+
+  border: 0;
+  padding: 10px 20px;
+  border-radius: 5px;
+  min-width: 80px;
+  margin: 5px;
+  font-size: 1rem;
+
+  &-primary {
+    background-color: $blue;
+    color: #fff;
+  }
+
+  &-successful {
+    background-color: $light-green;
+  }
+
+  &-warning {
+    background-color: $yellow;
+  }
+
+  &-danger {
+    background-color: $red;
+  }
+
+  // effects
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.link-no-decoration {
+  text-decoration: none;
+}
+
+.link {
+  &-primary {
+    color: $blue;
+    &:hover {
+      color: $blue;
+    }
+  }
+
+  &-secondary {
+
+  }
+  
+}

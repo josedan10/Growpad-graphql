@@ -1,38 +1,3 @@
-.btn {
-
-  border: 0;
-  padding: 10px;
-  border-radius: 5px;
-  min-width: 80px;
-  margin: 5px;
-  font-size: 1rem;
-  text-shadow:
-      -1px -1px 1px #111,
-      2px 2px 1px #363636;
-
-  &-primary {
-    background-color: $blue;
-    color: #fff;
-  }
-
-  &-successful {
-    background-color: $light-green;
-  }
-
-  &-warning {
-    background-color: $yellow;
-  }
-
-  &-danger {
-    background-color: $red;
-  }
-
-  // effects
-  &:hover {
-    cursor: pointer;
-  }
-}
-
 .alert-danger {
   background-color: $red;
   margin: 5px;
