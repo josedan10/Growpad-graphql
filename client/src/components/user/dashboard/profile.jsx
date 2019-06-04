@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { ApolloConsumer } from 'react-apollo'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 // actions
@@ -31,6 +32,9 @@ class Profile extends Component {
               <div className='profile-info'>
                 <h3 className='username'>{profile.username}</h3>
                 <img src={(profile.sex === 'M' ? maleDefault : femaleDefault)} />
+                <div className='links'>
+                  <Link to='/user/lists'>Lists</Link>
+                </div>
               </div>
             )
           } else {

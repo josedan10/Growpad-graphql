@@ -20,7 +20,8 @@ module.exports = (env, argv) => ({
     index: './src/index.js'
   },
   output: {
-    path: path.join(__dirname, '/dist'),
+    path: path.join(__dirname, '/dist/'),
+    publicPath: '/',
     filename: 'bundle.js'
     // chunkFilename: '[name].bundle.js'
   },
@@ -106,6 +107,7 @@ module.exports = (env, argv) => ({
     open: true,
     compress: true,
     historyApiFallback: true
+    // publicPath: 'http://localhost:8080/'
     // port: 8000
     // https: true
   },

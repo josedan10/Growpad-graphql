@@ -12,6 +12,9 @@ import Dashboard from './pages/dashboard'
 import LoginPage from './pages/login'
 import SignUpPage from './pages/signUp'
 
+// User routes
+import Lists from './pages/lists'
+
 // AuthRoutes Component
 import AuthRoute from './components/auth/AuthRoute'
 import Logout from './components/auth/Logout'
@@ -74,10 +77,15 @@ class App extends React.Component {
             <Loader />
             <Switch>
               <Route exact path='/' component={Home} />
+
+              {/* Auth routes */}
               <Route exact path='/login' component={LoginPage} />
               <Route exact path='/signUp' component={SignUpPage} />
-              <AuthRoute exact path='/dashboard' component={Dashboard} />
               <Route exact path='/logout' component={Logout} />
+
+              {/* User protected routes */}
+              <AuthRoute exact path='/dashboard' component={Dashboard} />
+              <AuthRoute exact path='/user/lists' component={Lists} />
             </Switch>
           </Router>
         </Provider>
