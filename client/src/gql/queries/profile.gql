@@ -3,6 +3,10 @@ query profile {
     username,
     firstName,
     lastName,
-    sex
+    sex,
+    lists {
+      _id,
+      title
+    }
   }
 }

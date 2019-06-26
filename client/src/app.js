@@ -8,15 +8,16 @@ import './scss/index.scss'
 
 // Pages
 import Home from './pages/home'
-import Dashboard from './pages/dashboard'
 import LoginPage from './pages/login'
 import SignUpPage from './pages/signUp'
 
 // User routes
-import Lists from './pages/lists'
+import Dashboard from './pages/user/dashboard'
+import Lists from './pages/user/lists'
 
 // AuthRoutes Component
 import AuthRoute from './components/auth/AuthRoute'
+import GuestRoute from './components/auth/GuestRoute'
 import Logout from './components/auth/Logout'
 import Loader from './components/Loader'
 
@@ -79,13 +80,13 @@ class App extends React.Component {
               <Route exact path='/' component={Home} />
 
               {/* Auth routes */}
-              <Route exact path='/login' component={LoginPage} />
-              <Route exact path='/signUp' component={SignUpPage} />
-              <Route exact path='/logout' component={Logout} />
+              <GuestRoute exact path='/login' component={LoginPage} />
+              <GuestRoute exact path='/signUp' component={SignUpPage} />
 
               {/* User protected routes */}
               <AuthRoute exact path='/dashboard' component={Dashboard} />
               <AuthRoute exact path='/user/lists' component={Lists} />
+              <AuthRoute exact path='/logout' component={Logout} />
             </Switch>
           </Router>
         </Provider>

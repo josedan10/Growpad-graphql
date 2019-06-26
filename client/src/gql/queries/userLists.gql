@@ -1,0 +1,6 @@
+query getLists {
+  getLists {
+    _id,
+    title
+  }
+}

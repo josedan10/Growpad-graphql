@@ -8,10 +8,11 @@ const TagModel = require('../../../models/Tag')
 
 let uid = '5c8b23ac145b1136f4b6b244'
 
-const getLists = async (parent, args, context, info) => {
+const getLists = async (parent, args, { uid }, info) => {
   try {
     // TODO: Pass the userId by the authentication
-    return await ListModel.find({})
+
+    return await ListModel.find({ createdBy: mongoose.Types.ObjectId(uid) })
   } catch (error) {
     throw new ApolloError(`Error getting lists.`, '404')
   }

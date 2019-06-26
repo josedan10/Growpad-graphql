@@ -1,8 +1,9 @@
 // actions
-import { SET_USER_PROFILE } from '../actions/user'
+import { SET_USER_PROFILE, UPDATE_USER_LISTS } from '../actions/user'
 
 const initState = {
-  profile: null
+  profile: null,
+  lists: null
 }
 
 const userReducer = (state = initState, action) => {
@@ -11,6 +12,12 @@ const userReducer = (state = initState, action) => {
       return {
         ...state,
         profile: action.profile
+      }
+
+    case UPDATE_USER_LISTS:
+      return {
+        ...state,
+        lists: action.lists
       }
 
     default:
