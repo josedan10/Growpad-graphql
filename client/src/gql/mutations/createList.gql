@@ -1,6 +1,6 @@
 mutation CreateList($title: String!) {
   createList(title: $title) {
-    id
+    _id
     title
   }
 }

@@ -26,7 +26,7 @@ class ListsContainer extends React.Component {
                 query: GET_LISTS
               })
                 .then(response => {
-                  this.props.updateUserLists(client)
+                  this.props.updateUserLists(response.data.getLists)
                 })
                 .catch(error => {
                   console.log(error)
@@ -35,7 +35,7 @@ class ListsContainer extends React.Component {
               return 'Loading lists...'
             } else if (this.props.lists.length > 0) {
               return (
-                this.props.lists.map(list => <span key={list._id}>{list.name}</span>)
+                this.props.lists.map(list => <span key={list._id}>{list.title}</span>)
               )
             } else return 'You don\'t have lists'
           }

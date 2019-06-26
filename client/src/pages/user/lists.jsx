@@ -1,5 +1,6 @@
 import React from 'react'
 import ListsContainer from '../../components/user/lists'
+import CreateListModal from '../../components/user/lists/createListModal'
 
 class ListsIndex extends React.Component {
   constructor (props) {
@@ -25,8 +26,8 @@ class ListsIndex extends React.Component {
       <main className='d-flex flex-center--column'>
         <h1>Your Lists</h1>
         <ListsContainer />
-        <button onClick={this.showModal}>Create new list</button>
-        
+        <button className='btn btn-primary' onClick={this.toggleModal}>Create new list</button>
+        <CreateListModal openModal={this.state.openModal} />
       </main>
     )
   }

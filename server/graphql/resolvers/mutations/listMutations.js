@@ -17,10 +17,9 @@ const { ObjectId } = mongoose.Types
  * @param {*} info
  * @returns
  */
-const createList = async (parent, { title }, { req }, info) => {
+const createList = async (parent, { title }, { req, uid }, info) => {
   try {
     // Get userId by authetication
-    let { uid } = req.session
     let userId = ObjectId(uid)
     let list = await ListModel.create({ title, createdBy: userId })
     UserModel.updateOne({ _id: userId },
@@ -48,9 +47,8 @@ const createList = async (parent, { title }, { req }, info) => {
  * @param {*} info
  * @returns { Response }
  */
-const deleteList = async (parent, { id }, { req }, info) => {
+const deleteList = async (parent, { id }, { req, uid }, info) => {
   try {
-    let { uid } = req.session
     let userId = ObjectId(uid)
     let list = await ListModel.findOneAndDelete(
       {
@@ -90,10 +88,9 @@ const deleteList = async (parent, { id }, { req }, info) => {
  * @param {*} info
  * @returns { List }
  */
-const modifyList = async (parent, { id, items, title }, { req }, info) => {
+const modifyList = async (parent, { id, items, title }, { req, uid }, info) => {
   try {
     // TODO: verify uid in list
-    let { uid } = req.session
     return ListModel.findOneAndUpdate(
       {
         _id: ObjectId(id)
