@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { ApolloConsumer } from 'react-apollo'
+import { Query } from 'react-apollo'
+
+import ListDetails from '../../components/user/lists/listDetails'
 
 import GET_LIST from '../../gql/queries/listDetails.gql'
 
-export default class ListDetails extends Component {
+export default class ListDetailsPage extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -12,23 +14,23 @@ export default class ListDetails extends Component {
   }
 
   render () {
-    console.log(this.props)
-
     let { params } = this.props.match
 
     return (
-      <ApolloConsumer>
+      <Query query={GET_LIST} variables={{ id: params.id }}>
         {
-          client => {
-            client.query({
-              query: GET_LIST,
-              variables: { id: params.id }
-            })
-              .then(response => console.log(response))
-              .catch(error => console.error(error))
+          ({ data, error, loading }) => {
+            if (loading) return 'Loading...'
+            if (error) {
+              console.log('Error fetching the query.')
+              console.log(error)
+              return 'Error getting list data'
+            }
+
+            if (data) return <ListDetails data={data.getListById} />
           }
         }
-      </ApolloConsumer>
+      </Query>
     )
   }
 }
