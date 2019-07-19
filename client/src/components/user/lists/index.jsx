@@ -1,6 +1,7 @@
 import React from 'react'
 import { ApolloConsumer } from 'react-apollo'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import GET_LISTS from '../../../gql/queries/userLists.gql'
 
@@ -35,7 +36,9 @@ class ListsContainer extends React.Component {
               return 'Loading lists...'
             } else if (this.props.lists.length > 0) {
               return (
-                this.props.lists.map(list => <span key={list._id}>{list.title}</span>)
+                <ul>
+                  {this.props.lists.map(list => <li key={list._id}><Link to={`/user/list/${list._id}`}>{list.title}</Link></li>)}
+                </ul>
               )
             } else return 'You don\'t have lists'
           }

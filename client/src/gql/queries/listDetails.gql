@@ -1,0 +1,17 @@
+query getListById($id: ID!) {
+  getListById (id: $id) {
+    _id,
+    title,
+    items {
+      _id,
+      checked,
+      name
+    },
+    tags {
+      _id,
+      name
+    },
+    updatedAt,
+    createdAt
+  }
+}

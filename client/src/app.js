@@ -14,6 +14,7 @@ import SignUpPage from './pages/signUp'
 // User routes
 import Dashboard from './pages/user/dashboard'
 import Lists from './pages/user/lists'
+import ListDetails from './pages/user/listDetails'
 
 // AuthRoutes Component
 import AuthRoute from './components/auth/AuthRoute'
@@ -86,6 +87,7 @@ class App extends React.Component {
               {/* User protected routes */}
               <AuthRoute exact path='/dashboard' component={Dashboard} />
               <AuthRoute exact path='/user/lists' component={Lists} />
+              <AuthRoute exact path='/user/list/:id' component={ListDetails} />
               <AuthRoute exact path='/logout' component={Logout} />
             </Switch>
           </Router>

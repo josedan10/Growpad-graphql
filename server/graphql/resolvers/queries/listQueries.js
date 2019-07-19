@@ -27,9 +27,8 @@ const getLists = async (parent, args, { uid }, info) => {
  * @param {*} info
  * @returns { List }
  */
-const getListById = async (parent, { id }, { req }, info) => {
+const getListById = async (parent, { id }, context, info) => {
   try {
-    let { uid } = req.session
     return await ListModel.findById(mongoose.Types.ObjectId(id))
   } catch (error) {
     throw new ApolloError(`Error getting list.`, '404')
