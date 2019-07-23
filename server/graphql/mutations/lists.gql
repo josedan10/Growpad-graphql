@@ -10,6 +10,11 @@ extend type Mutation {
     id: ID!
   ): List @auth
 
+  addItemToList (
+    id: ID!
+    name: String!
+  ): List @auth
+
   modifyList (
     id: ID!
     title: String

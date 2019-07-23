@@ -1,0 +1,17 @@
+mutation AddItemToList($id: ID!, $name: String!) {
+  addItemToList(id: $id, name: $name) {
+    _id
+    title
+    items {
+      _id
+      name
+      checked
+    }
+    tags {
+      _id
+      name
+    }
+    createdAt
+    updatedAt
+  }
+}

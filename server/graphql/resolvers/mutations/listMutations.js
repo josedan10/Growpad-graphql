@@ -78,6 +78,38 @@ const deleteList = async (parent, { id }, { req, uid }, info) => {
     )
   }
 }
+/**
+ * @description: Creates a new item in user's list
+ *
+ * @param {*} parent
+ * @param {*} args
+ * @param {*} context
+ * @param {*} info
+ */
+const addItemToList = async (parent, { id, name }, context, info) => {
+  console.log(name)
+  try {
+    return ListModel.findOneAndUpdate(
+      {
+        _id: ObjectId(id)
+      },
+      {
+        $addToSet: {
+          items: {
+            name,
+            checked: false
+          }
+        }
+      },
+      {
+        new: true
+      }
+    )
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError('Error adding new item.', '400', error)
+  }
+}
 
 /**
  * @description: set the list with new list passed in "input" array, and the list title
@@ -186,6 +218,7 @@ const stopShareListWithUsers = async (parent, { id, users }, { req }, info) => {
 
 module.exports = {
   createList,
+  addItemToList,
   modifyList,
   deleteList,
   shareListWith,
