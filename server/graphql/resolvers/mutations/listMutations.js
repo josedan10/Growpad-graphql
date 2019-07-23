@@ -87,7 +87,6 @@ const deleteList = async (parent, { id }, { req, uid }, info) => {
  * @param {*} info
  */
 const addItemToList = async (parent, { id, name }, context, info) => {
-  console.log(name)
   try {
     return ListModel.findOneAndUpdate(
       {
