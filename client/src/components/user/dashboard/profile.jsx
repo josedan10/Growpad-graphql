@@ -33,7 +33,7 @@ class Profile extends Component {
                 <h3 className='username'>{profile.username}</h3>
                 <img src={(profile.sex === 'M' ? maleDefault : femaleDefault)} />
                 <div className='links'>
-                  <Link to='/user/lists'>Lists</Link>
+                  <Link className='link-no-decoration link-primary' to='/user/lists'>Lists</Link>
                 </div>
               </div>
             )

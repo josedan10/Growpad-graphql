@@ -37,7 +37,7 @@ class ListsContainer extends React.Component {
             } else if (this.props.lists.length > 0) {
               return (
                 <ul>
-                  {this.props.lists.map(list => <li key={list._id}><Link to={`/user/list/${list._id}`}>{list.title}</Link></li>)}
+                  {this.props.lists.map(list => <li key={list._id}><Link className='link-no-decoration link-primary' to={`/user/list/${list._id}`}>{list.title}</Link></li>)}
                 </ul>
               )
             } else return 'You don\'t have lists'
