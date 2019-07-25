@@ -7,8 +7,16 @@
   margin: 5px;
   font-size: 1rem;
 
+  box-shadow: 0 0 5px rgba(0, 0, 0, .4);
+
+  // effects
+  &:hover {
+    cursor: pointer;
+  }
+
   &-primary {
-    background-color: $blue;
+    background-color: $dark-green;
+    background: $btn-primary-bg;
     color: #fff;
   }
 
@@ -22,11 +30,6 @@
 
   &-danger {
     background-color: $red;
-  }
-
-  // effects
-  &:hover {
-    cursor: pointer;
   }
 }
 

@@ -3,13 +3,13 @@ import { Mutation } from 'react-apollo'
 
 import ADD_ITEM_TO_LIST from '../../../gql/mutations/addItemToList.gql'
 
-export default ({ listId }) => {
+export default ({ listId, updateList }) => {
   
   const [ name, setName ] = useState('')
 
   function handleSubmit (mutation, name) {
     mutation({ variables: { name, id: listId } })
-      .then(response => response)
+      .then(response => updateList(response.data))
       .catch(error => console.log(error.graphQLErrors))
   }
 

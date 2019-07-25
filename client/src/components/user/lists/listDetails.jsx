@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import moment from 'moment'
 import AddItemModal from './addItemModal'
 
 export default class ListDetails extends Component {
@@ -20,6 +21,7 @@ export default class ListDetails extends Component {
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.removeTag = this.removeTag.bind(this)
     this.addItemToList = this.addItemToList.bind(this)
+    this.updateList = this.updateList.bind(this)
   }
 
   addItemToList (name) {
@@ -29,8 +31,15 @@ export default class ListDetails extends Component {
     }))
   }
 
-  handleCheckboxChange (ind) {
+  updateList ({ addItemToList }) {
+    this.setState(prevState => ({
+      ...prevState,
+      list: { ...addItemToList },
+      showAddItemModal: false
+    }))
+  }
 
+  handleCheckboxChange (ind) {
     // This trigger a mutation to update the item in the database
 
     this.setState(prevState => {
@@ -56,22 +65,22 @@ export default class ListDetails extends Component {
     })
   }
 
+  displayDate (timestamp) {
+    let date = moment(timestamp, 'x')
+    return date.from(moment())
+  }
+
   render () {
     let { title, items, tags, createdAt, updatedAt, id } = this.state.list
     let { showAddItemModal } = this.state
-    let { handleCheckboxChange, removeTag } = this
+    let { handleCheckboxChange, removeTag, updateList, displayDate } = this
 
     return (
       <div>
         <h2>{ title }</h2>
         {/* Implement here moment.js */}
-        <small><b>Last update:</b> { updatedAt }</small>
+        <small><b>Last update:</b> { displayDate(updatedAt) }</small>
         <hr />
-
-        <button onClick={e => this.setState(prevState => ({
-          ...prevState,
-          showAddItemModal: true
-        }))}>Add new item</button>
         <ul>
           {
             items.length
@@ -79,6 +88,13 @@ export default class ListDetails extends Component {
               : 'No items in list'
           }
         </ul>
+
+        <button className='btn btn-primary' onClick={e => this.setState(prevState => ({
+          ...prevState,
+          showAddItemModal: true
+        }))}>Add new item</button>
+
+        <br />
 
         <h3>Tags</h3>
         <ul>
@@ -90,7 +106,7 @@ export default class ListDetails extends Component {
               : 'No tags associated to this list'
           }
         </ul>
-        { showAddItemModal && <AddItemModal listId={id} />}
+        { showAddItemModal && <AddItemModal updateList={updateList} listId={id} />}
       </div>
     )
   }

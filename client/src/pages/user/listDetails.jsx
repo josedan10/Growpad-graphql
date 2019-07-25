@@ -17,20 +17,22 @@ export default class ListDetailsPage extends Component {
     let { params } = this.props.match
 
     return (
-      <Query query={GET_LIST} variables={{ id: params.id }}>
-        {
-          ({ data, error, loading }) => {
-            if (loading) return 'Loading...'
-            if (error) {
-              console.log('Error fetching the query.')
-              console.log(error)
-              return 'Error getting list data'
-            }
+      <main className='d-flex flex-center--column bg-light-gray'>
+        <Query query={GET_LIST} variables={{ id: params.id }}>
+          {
+            ({ data, error, loading }) => {
+              if (loading) return 'Loading...'
+              if (error) {
+                console.log('Error fetching the query.')
+                console.log(error)
+                return 'Error getting list data'
+              }
 
-            if (data) return <ListDetails data={data.getListById} />
+              if (data) return <ListDetails data={data.getListById} />
+            }
           }
-        }
-      </Query>
+        </Query>
+      </main>
     )
   }
 }
