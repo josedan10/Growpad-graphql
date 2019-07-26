@@ -66,7 +66,11 @@ const deleteList = async (parent, { id }, { req, uid }, info) => {
       }
     )
 
-    return list
+    return {
+      success: true,
+      msg: 'List deleted',
+      errors: []
+    }
   } catch (error) {
     console.log(error)
     throw new ApolloError(

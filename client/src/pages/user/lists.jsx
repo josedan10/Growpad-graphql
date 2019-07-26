@@ -27,7 +27,7 @@ class ListsIndex extends React.Component {
         <h1>Your Lists</h1>
         <ListsContainer />
         <button className='btn btn-primary' onClick={this.toggleModal}>Create new list</button>
-        <CreateListModal openModal={this.state.openModal} />
+        <CreateListModal openModal={this.state.openModal} toogleModal={this.toggleModal} />
       </main>
     )
   }

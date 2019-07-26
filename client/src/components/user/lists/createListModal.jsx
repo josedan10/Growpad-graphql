@@ -27,6 +27,7 @@ class CreateListModal extends React.Component {
   handleSubmit (createList) {
     let { title } = this.state
     createList({ variables: { title } })
+    this.props.toogleModal()
   }
 
   render () {
@@ -42,8 +43,6 @@ class CreateListModal extends React.Component {
             query: UserLists,
             data: { getLists: getLists.concat([createList]) }
           })
-
-          console.log(getLists.concat([createList]))
 
           this.props.updateUserLists(getLists.concat([createList]))
         }}
