@@ -1,0 +1,10 @@
+.icon {
+  &-small {
+    margin: 0 5px;
+    width: 1rem;
+  }
+
+  &-danger {
+    color: $red;
+  }
+}

@@ -1,63 +1,57 @@
 import { Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import React from 'react'
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
 import PropTypes from 'prop-types'
+import { ApolloConsumer } from 'react-apollo'
+import gql from 'graphql-tag'
 
-// Errors
-import { UNAUTHENTICATED } from '../../errors'
+// actions
+import { logout } from '../../store/actions/auth'
 
-const GET_PROFILE = gql`
+const CHECK_TOKEN = gql`
   {
-    profile {
-      username
-      email
-    }
+    checkToken
   }
 `
 
-const AuthRoute = ({ component: Component, ...rest }) => {
-  return (
-    <Query query={GET_PROFILE}>
-      {({ loading, error, data }) => {
-        if (loading) return 'Loading...'
-        if (error) {
-          switch (error.graphQLErrors[0].code) {
-            case UNAUTHENTICATED:
-              // redirect
-              return (
-                <Route
-                  {...rest}
-                  render={props => <Redirect
-                    to={{
-                      pathname: '/login',
-                      state: { from: props.location }
-                    }}
-                  />}
-                />
-              )
-
-            default:
-              console.log(error.message)
-              return `Error! ${error.message}`
-          }
-        }
-
-        return (
-          <Route
-            {...rest}
-            render={props => <Component {...props} user={data} />}
-          />
-        )
-      }}
-    </Query>
-  )
+const AuthRoute = ({ component: Component, authenticated, logout, ...rest }) => {
+  // Check token here
+  if (!authenticated) {
+    // localStorage.removeItem('auth-token')
+    return (
+      <Route
+        {...rest}
+        render={props => <Redirect
+          to={{
+            pathname: '/login',
+            state: { from: props.location }
+          }}
+        />}
+      />
+    )
+  } else {
+    return (
+      <Route
+        {...rest}
+        render={props => <Component {...props} />}
+      />
+    )
+  }
 }
 
 AuthRoute.propTypes = {
   component: PropTypes.func,
-  location: PropTypes.object
+  authenticated: PropTypes.bool,
+  location: PropTypes.object,
+  logout: PropTypes.func
 }
 
-export default connect()(AuthRoute)
+const mapStateToProps = (state) => ({
+  authenticated: state.auth.authenticated
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  logout: () => { dispatch(logout()) }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthRoute)

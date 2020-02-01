@@ -1,7 +1,7 @@
 const { SchemaDirectiveVisitor } = require('apollo-server-express')
 const { defaultFieldResolver } = require('graphql')
 
-const { checkLogin, checkAdminUser } = require('../../middlewares/auth')
+const { isAuthenticated, checkAdminUser } = require('../../middlewares/auth')
 
 class AuthDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition (field) {
@@ -9,7 +9,9 @@ class AuthDirective extends SchemaDirectiveVisitor {
 
     field.resolve = function (...args) {
       const [ , , context ] = args
-      checkLogin(context.req)
+      let uid = isAuthenticated(context.req)
+      // Pass the user id in the context
+      args[2].uid = uid
       return resolve.apply(this, args)
     }
   }

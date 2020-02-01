@@ -1,0 +1,32 @@
+// Material ui
+
+$green: #4CAF50;
+$red: #F44336;
+$yellow: #FFEB3B;
+
+// Adobe ui
+$light-green: #3CB830;
+$dark-green: #1F8515;
+$blue: #5547C4;
+$light-orange: #EB7426;
+$dark-orange: #AB4400;
+$light-gray: #e6e6e6;
+
+// Gradients
+$btn-primary-bg: linear-gradient(90deg, rgba(49,177,90,1) 0%, rgba(39,191,28,1) 100%);
+$bgApp: linear-gradient(90deg, rgba(205,255,232,1) 0%, rgba(161,255,128,1) 100%);
+
+
+// backgrounds
+.bg-blue {
+  background-color: $light-green;
+}
+
+.bg-light-gray {
+  background-color: $light-gray;
+}
+
+// text
+.text-white {
+  color: $light-gray;
+}

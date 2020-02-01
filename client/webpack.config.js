@@ -20,7 +20,8 @@ module.exports = (env, argv) => ({
     index: './src/index.js'
   },
   output: {
-    path: path.join(__dirname, '/dist'),
+    path: path.join(__dirname, '/dist/'),
+    publicPath: '/',
     filename: 'bundle.js'
     // chunkFilename: '[name].bundle.js'
   },
@@ -28,11 +29,17 @@ module.exports = (env, argv) => ({
   module: {
     rules: [
       {
-        test: /\.sass$/,
+        test: /\.scss$/,
         exclude: /node_modules/,
         use: [
           {
-            loader: 'sass-loader',
+            loader: 'style-loader' // creates style nodes from JS strings
+          },
+          {
+            loader: 'css-loader' // translates CSS into CommonJS
+          },
+          {
+            loader: 'sass-loader', // compiles Sass to CSS
             options: {
               sourceMap: argv.mode === 'development'
             }
@@ -67,6 +74,19 @@ module.exports = (env, argv) => ({
             }
           }
         ]
+      },
+      // {
+      //   test: /\.svg$/,
+      //   loader: 'svg-inline-loader'
+      // },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {}
+          }
+        ]
       }
     ]
   },
@@ -87,6 +107,7 @@ module.exports = (env, argv) => ({
     open: true,
     compress: true,
     historyApiFallback: true
+    // publicPath: 'http://localhost:8080/'
     // port: 8000
     // https: true
   },

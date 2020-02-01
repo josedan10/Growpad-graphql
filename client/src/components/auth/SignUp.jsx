@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router'
 import { Mutation } from 'react-apollo'
 
 // Graphql mutation
 import signUpMutation from '../../gql/mutations/signUp.gql'
 
-export default class SignUpForm extends Component {
+class SignUpForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -31,7 +32,7 @@ export default class SignUpForm extends Component {
 
   handleSubmit (mutation) {
     mutation({ variables: { input: this.state } })
-      .then(this.props.history.push('/dashboard'))
+      .then(this.props.history.push('/login'))
       .catch(error => console.error(error.graphQLErrors))
   }
 
@@ -41,17 +42,17 @@ export default class SignUpForm extends Component {
         { (signUp, { data, loading, error }) => (
           <div>
             { loading && <span>Enviando...</span> }
-            { (error && error.networkError) ? <span>Error Network: { error.networkError.message }</span> : 
-                (error && error.graphQLErrors[0]) ? (
-                  <div className='errors'>
-                    <span>{error.graphQLErrors[0].message}</span>
-                    <ul>
-                      {error.graphQLErrors[0].errors.map(err => (
-                        <li>{ err.message }</li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : ''
+            { (error && error.networkError) ? <span className='alert-danger'>Error Network: { error.networkError.message }</span> :
+              (error && error.graphQLErrors[0]) ? (
+                <div className='errors'>
+                  { console.log(error.graphQLErrors[0].message) }
+                  <ul>
+                    {error.graphQLErrors[0].errors.map((err, index) => (
+                      <li key={err + index} className='alert-danger'>{ err.message }</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : ''
             }
             <form onSubmit={e => {
               e.preventDefault()
@@ -91,7 +92,7 @@ export default class SignUpForm extends Component {
                 <input onChange={this.handleChange} type='radio' name='sex' value='M' /> Male
               </div>
 
-              <input type='submit' value='Sign Up' />
+              <input className='btn btn-primary' type='submit' value='Sign Up' />
             </form>
           </div>
         ) }
@@ -99,3 +100,5 @@ export default class SignUpForm extends Component {
     )
   }
 }
+
+export default withRouter(SignUpForm)

@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import { Mutation } from 'react-apollo'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import LoginMutation from '../../gql/mutations/login.gql'
 
-export default class LoginForm extends Component {
+// actions
+import { authenticateUser } from '../../store/actions/auth'
+
+class LoginForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -24,33 +29,78 @@ export default class LoginForm extends Component {
   handleSubmit (mutation) {
     let { username, password } = this.state
     mutation({ variables: { username, password } })
-      .then(this.props.history.push('/dashboard'))
-      .catch(error => console.error(error.graphQLErrors))
+      .then(response => {
+        let { success, token } = response.data.login
+        if (success) {
+          this.props.authenticateUser(token)
+          this.props.history.push('/dashboard')
+        }
+      })
+      .catch(error => console.error(error))
   }
 
   render () {
     return (
       <Mutation mutation={LoginMutation} errorPolicy='all'>
-        { (login, { loading, error }) => (
+        { (login, { data, loading, error }) => {
 
-          <form onSubmit={e => {
-            e.preventDefault()
-            this.handleSubmit(login)
-          }}>
-            { error && <span>{ error.toString() }</span> }
+          let msgError
+          if (error) {
+            if (error.graphQLErrors.length > 0 && error.graphQLErrors[0] && error.graphQLErrors[0].errors) {
+              msgError = (
+                <div>
+                  <ul>
+                    { error.graphQLErrors[0].errors.map((err, index) => (
+                      <li key={err + index} className='alert-danger'>{ err.message }</li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            } else {
+              console.log(error)
+              msgError = (
+                <div>
+                  <span className='alert-danger'>{ error.toString() }</span>
+                </div>
+              )
+            }
+          }
+          return (
 
-            <div className='input-group'>
-              <label htmlFor='username'>Username</label>
-              <input type='text' name='username' id='username' />
-            </div>
-            <div className='input-group'>
-              <label htmlFor='password'>Password</label>
-              <input type='password' name='password' id='password' />
-            </div>
-            <input type='submit' value='Login' />
-          </form>
-        )}
+            <form onSubmit={e => {
+              e.preventDefault()
+              this.handleSubmit(login)
+            }}>
+              { loading && 'Loading...' }
+
+              { msgError }
+
+              <div className='input-group'>
+                <label htmlFor='username'>Username</label>
+                <input onChange={this.handleChange} type='text' name='username' id='username' />
+              </div>
+              <div className='input-group'>
+                <label htmlFor='password'>Password</label>
+                <input onChange={this.handleChange} type='password' name='password' id='password' />
+              </div>
+              <input className='btn btn-primary' type='submit' value='Login' />
+            </form>
+          )
+        }}
       </Mutation>
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  authenticated: state.auth.authenticated
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  authenticateUser: (token) => { dispatch(authenticateUser(token)) }
+})
+
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginForm))

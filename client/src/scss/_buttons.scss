@@ -1,0 +1,52 @@
+.btn {
+
+  border: 0;
+  padding: 10px 20px;
+  border-radius: 5px;
+  min-width: 80px;
+  margin: 5px;
+  font-size: 1rem;
+
+  box-shadow: 0 0 5px rgba(0, 0, 0, .4);
+
+  // effects
+  &:hover {
+    cursor: pointer;
+  }
+
+  &-primary {
+    background-color: $dark-green;
+    background: $btn-primary-bg;
+    color: #fff;
+  }
+
+  &-successful {
+    background-color: $light-green;
+  }
+
+  &-warning {
+    background-color: $yellow;
+  }
+
+  &-danger {
+    background-color: $red;
+  }
+}
+
+.link-no-decoration {
+  text-decoration: none;
+}
+
+.link {
+  &-primary {
+    color: $blue;
+    &:hover {
+      color: $blue;
+    }
+  }
+
+  &-secondary {
+
+  }
+  
+}

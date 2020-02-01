@@ -1,12 +1,20 @@
 const { AuthenticationError } = require('apollo-server-express')
+const jwt = require('jsonwebtoken')
 
-const { SESS_NAME } = require('../config')
+const { TOKEN_SECRET, TOKEN_LIFETIME } = require('../config')
 
 // Models
 const UserModel = require('../models/User')
 
-const loggedIn = req => req.session.uid
-const isAdmin = req => req.session.userType === 'admin'
+const isValidToken = (token) => refreshToken(getPayload(token)) !== ''
+
+const isAdmin = user => user.userType === 'admin'
+
+const getPayload = token => {
+  let [, payload] = token.split(' ')
+
+  return payload
+}
 
 const attemptLogin = async ({ username, password }) => {
   let user = await UserModel.findOne({ username })
@@ -22,39 +30,74 @@ const attemptLogin = async ({ username, password }) => {
   return user
 }
 
-const checkLogin = (req) => {
-  if (!loggedIn(req)) {
+const isAuthenticated = ({ headers }) => {
+  let token = headers.authorization
+
+  if (!token) {
     throw new AuthenticationError(`You must be logged in.`, 401)
   }
-  return loggedIn(req)
+
+  return decodeToken(token)
 }
 
-const checkLogout = (req) => {
-  if (loggedIn(req)) {
-    throw new AuthenticationError(`You are already logged in.`, 412)
+const checkLogout = ({ headers }) => {
+  const token = headers.authorization
+
+  if (token) {
+    throw new AuthenticationError(`You must be logged out.`, 412)
   }
 }
 
-const logout = (req, res) => new Promise((resolve, reject) => {
-  req.session.destroy(error => {
-    if (error) reject(error)
-
-    res.clearCookie(SESS_NAME)
-    resolve(true)
-  })
+const logout = (res) => new Promise((resolve, reject) => {
+  res.headers.authorization = ''
+  resolve(true)
 })
 
-const checkAdminUser = (req) => {
-  if (!isAdmin(req)) {
+const checkAdminUser = (user) => {
+  if (!isAdmin(user)) {
     throw new AuthenticationError(`You don't have permisions access to this info.`, 401)
   }
-  return isAdmin(req)
+  return isAdmin(user)
+}
+
+const decodeToken = (token) => {
+  let payload = getPayload(token)
+  payload = refreshToken(payload)
+  let { id } = jwt.decode(payload)
+  return id
+}
+
+const createToken = (id) => {
+  const payload = { id }
+  return jwt.sign(payload, TOKEN_SECRET, {
+    expiresIn: TOKEN_LIFETIME
+  })
+}
+
+const refreshToken = (payload) => {
+  try {
+    jwt.verify(payload, TOKEN_SECRET)
+  } catch (error) {
+    if (error.message === 'jwt expired') {
+      let { id } = jwt.decode(payload)
+      payload = createToken(id)
+    } else {
+      // invalid signature
+      payload = ''
+    }
+  }
+
+  return payload
 }
 
 module.exports = {
   attemptLogin,
   logout,
-  checkLogin,
+  isAuthenticated,
   checkLogout,
-  checkAdminUser
+  checkAdminUser,
+  isValidToken,
+  decodeToken,
+  createToken,
+  refreshToken
 }

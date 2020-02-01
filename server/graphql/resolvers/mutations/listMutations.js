@@ -17,10 +17,9 @@ const { ObjectId } = mongoose.Types
  * @param {*} info
  * @returns
  */
-const createList = async (parent, { title }, { req }, info) => {
+const createList = async (parent, { title }, { req, uid }, info) => {
   try {
     // Get userId by authetication
-    let { uid } = req.session
     let userId = ObjectId(uid)
     let list = await ListModel.create({ title, createdBy: userId })
     UserModel.updateOne({ _id: userId },
@@ -48,9 +47,8 @@ const createList = async (parent, { title }, { req }, info) => {
  * @param {*} info
  * @returns { Response }
  */
-const deleteList = async (parent, { id }, { req }, info) => {
+const deleteList = async (parent, { id }, { req, uid }, info) => {
   try {
-    let { uid } = req.session
     let userId = ObjectId(uid)
     let list = await ListModel.findOneAndDelete(
       {
@@ -68,7 +66,11 @@ const deleteList = async (parent, { id }, { req }, info) => {
       }
     )
 
-    return list
+    return {
+      success: true,
+      msg: 'List deleted',
+      errors: []
+    }
   } catch (error) {
     console.log(error)
     throw new ApolloError(
@@ -78,6 +80,37 @@ const deleteList = async (parent, { id }, { req }, info) => {
         errorMsg: error.message
       }
     )
+  }
+}
+/**
+ * @description: Creates a new item in user's list
+ *
+ * @param {*} parent
+ * @param {*} args
+ * @param {*} context
+ * @param {*} info
+ */
+const addItemToList = async (parent, { id, name }, context, info) => {
+  try {
+    return ListModel.findOneAndUpdate(
+      {
+        _id: ObjectId(id)
+      },
+      {
+        $addToSet: {
+          items: {
+            name,
+            checked: false
+          }
+        }
+      },
+      {
+        new: true
+      }
+    )
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError('Error adding new item.', '400', error)
   }
 }
 
@@ -90,10 +123,9 @@ const deleteList = async (parent, { id }, { req }, info) => {
  * @param {*} info
  * @returns { List }
  */
-const modifyList = async (parent, { id, items, title }, { req }, info) => {
+const modifyList = async (parent, { id, items, title }, { req, uid }, info) => {
   try {
     // TODO: verify uid in list
-    let { uid } = req.session
     return ListModel.findOneAndUpdate(
       {
         _id: ObjectId(id)
@@ -189,6 +221,7 @@ const stopShareListWithUsers = async (parent, { id, users }, { req }, info) => {
 
 module.exports = {
   createList,
+  addItemToList,
   modifyList,
   deleteList,
   shareListWith,

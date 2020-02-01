@@ -1,0 +1,12 @@
+query profile {
+  profile {
+    username,
+    firstName,
+    lastName,
+    sex,
+    lists {
+      _id,
+      title
+    }
+  }
+}

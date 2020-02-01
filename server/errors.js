@@ -7,9 +7,9 @@ const INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR'
 const formatError = (error) => {
   let { extensions, message } = error
   let { errors, typeError, status } = extensions.exception
-  
-  console.log(error)
-  
+
+  // console.log('Error handling',  error)
+
   return {
     message,
     code: extensions.code,

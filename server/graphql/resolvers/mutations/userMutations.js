@@ -1,6 +1,7 @@
 const { ApolloError } = require('apollo-server-express')
 const mongoose = require('mongoose')
 const Joi = require('joi')
+const jwt = require('jsonwebtoken')
 const AuthMiddleware = require('../../../middlewares/auth')
 
 // Validators
@@ -38,9 +39,12 @@ const UserModel = require('../../../models/User')
  */
 const signUp = async (parent, { input }, { req }, info) => {
   try {
-    let user = await UserModel.create(input)
-    req.session.uid = user.id
-    return user
+    await UserModel.create(input)
+
+    return {
+      success: true,
+      errors: []
+    }
   } catch (error) {
     let errors = []
     for (let key in error.errors) {
@@ -51,28 +55,34 @@ const signUp = async (parent, { input }, { req }, info) => {
   }
 }
 
-const login = async (parent, args, { req }, info) => {
+const login = async (parent, args, { res }, info) => {
   try {
-    // console.log(req.session)
     await Joi.validate(args, loginValidator, { abortEarly: false })
 
     let user = await AuthMiddleware.attemptLogin(args)
-    req.session.uid = user.id
-    req.session.userType = user.type
-    return user
+
+    let token = AuthMiddleware.createToken(user._id)
+
+    res.header('Authorization', 'Bearer ' + token)
+
+    return {
+      success: true,
+      token,
+      errors: []
+    }
   } catch (error) {
     console.log(error)
-    throw new ApolloError(`Error while login the user: ${error.message}`, 500, error.errors)
+    throw new ApolloError(`Error while login the user: ${error.message}`, 500, { errors: error.errors || error.details })
   }
 }
 
 const logout = async (parent, args, { req, res }, info) => {
-  return AuthMiddleware.logout(req, res)
+  return AuthMiddleware.logout(res)
 }
 
 const changeUserType = async (parent, { id, type }, context, info) => {
   try {
-    return await UserModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId() },
+    return await UserModel.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) },
       {
         $set: { type }
       }

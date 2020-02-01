@@ -8,6 +8,11 @@ extend type Mutation {
 
   deleteList (
     id: ID!
+  ): Response @auth
+
+  addItemToList (
+    id: ID!
+    name: String!
   ): List @auth
 
   modifyList (

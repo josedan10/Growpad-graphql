@@ -37,6 +37,8 @@ const {
   noteTags
 } = require('./noteResolvers')
 
+const { isValidToken, attemptLogin, createToken } = require('../../middlewares/auth')
+
 const resolvers = {
   User: {
     interests: userInterests,
@@ -65,6 +67,9 @@ const resolvers = {
   },
 
   Query: {
+    checkToken: async (parent, args, { req: { headers: { authorization } }, res }, info) => {
+      return isValidToken(authorization)
+    },
     ...userQueries,
     ...tagQueries,
     ...interestQueries,

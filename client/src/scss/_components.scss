@@ -1,0 +1,34 @@
+.alert-danger {
+  background-color: $red;
+  margin: 5px;
+  color: #fff;
+  display: inline-block;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.loader-container {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  background: black;
+
+  & .loader {
+    width: 200px;
+    height: 200px;
+    animation-name: load;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    background: #f3f3f3;
+  }
+}
+
+.c-pointer {
+  cursor: pointer;
+}

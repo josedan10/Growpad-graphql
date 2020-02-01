@@ -1,9 +1,9 @@
 // actions
-import { AUTHENTICATE_USER } from '../actions/auth'
+import { AUTHENTICATE_USER, LOGOUT } from '../actions/auth'
 
 const initState = {
-  authenticated: false,
-  user: null,
+  authenticated: localStorage.getItem('auth-token') !== null,
+  token: localStorage.getItem('auth-token'),
   error: null
 }
 
@@ -13,7 +13,14 @@ const authReducer = (state = initState, action) => {
       return {
         ...state,
         authenticated: true,
-        user: action.user
+        token: action.token
+      }
+
+    case LOGOUT:
+      return {
+        ...state,
+        authenticated: false,
+        token: null
       }
 
     default:

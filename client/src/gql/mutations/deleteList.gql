@@ -1,0 +1,10 @@
+mutation DeleteList ($id: ID!) {
+  deleteList(id: $id) {
+    success,
+    msg,
+    errors {
+      path,
+      message
+    }
+  }
+}
