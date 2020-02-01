@@ -1,8 +1,8 @@
 
-#Models
+# Models
 ---
 
-##<span id="user">User</span>
+## <span id="user">User</span>
 * **_id** (primary key)
 * **username** (index, unique)
 * **email** (unique)
@@ -31,17 +31,17 @@
 * **interests** (1 : N) => [ <a href="#interest">Interest</a> ]
 * **plans** (1 : N)     => [ <a href="#plan">Plan</a> ]
 
-##<span id="interest">Interest</span>
+## <span id="interest">Interest</span>
 * **_id** (primary key)
 * **name** (index, unique)
 * **users** (M : N) => [ <a href="user">User</a> ]
 
-##<span id="tag">Tag</span>
+## <span id="tag">Tag</span>
 * **_id** (primary key)
 * **name** (index, unique)
 * **users** (M : N) => [ <a href="user">User</a> ] *users are related to tags by lists, notes, wallets and plans*
 
-##<span id="list">List</span>
+## <span id="list">List</span>
 * **_id** (primary key)
 * **title**
 * **items**
@@ -51,7 +51,7 @@
 * **sharedWith** (M : N)  => [ <a href="#user">User</a> ]
 * **createdBy** (1 : 1)   => <a href="#user">User</a>
 
-##<span id="note">Note</span>
+## <span id="note">Note</span>
 * **_id** (primary key)
 * **title** (default: *DateTime*)
 * **content**
@@ -59,7 +59,7 @@
 * **sharedWith** (M : N)  => [ <a href="#user">User</a> ]
 * **createdBy** (1 : 1)   => <a href="#user">User</a>
 
-##<span id="wallet">Wallet</span>
+## <span id="wallet">Wallet</span>
 * **_id** (primary key)
 * **name**
 * **description**
@@ -67,7 +67,7 @@
 * **tags** (1 : N)  => [ <a href="#tag">Tag</a> ]
 * **owner** (1 : 1) => <a href="#user">User</a>
 
-##<span id="movement">Movement</span>
+## <span id="movement">Movement</span>
 * **_id** (primary key)
 * **action** (*deposit* | *withdrawal*)
 * **amount**
@@ -75,7 +75,7 @@
 * **wallet** (N : 1)  => <a href="#wallet">Wallet</a>
 * **user** (1 : 1)    => <a href="#user">User</a>
 
-##<span id="plan">Plan</span>
+## <span id="plan">Plan</span>
 * **_id** (primary key)
 * **targets**
   * **cost**
